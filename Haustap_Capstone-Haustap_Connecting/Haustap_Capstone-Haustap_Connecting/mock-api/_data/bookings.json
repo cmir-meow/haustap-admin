@@ -1,0 +1,13 @@
+[
+    {
+        "id": 1,
+        "provider_id": 1,
+        "service_name": "Bungalow",
+        "scheduled_date": "2025-10-08",
+        "scheduled_time": "10:00",
+        "address": "Blk 11 Lot 6 Apple St. Saint Joseph Village 10\n              Brgy. Langgam San Pedro City, Laguna",
+        "status": "pending",
+        "notes": "Booked with Ana Santos",
+        "price": 0
+    }
+]

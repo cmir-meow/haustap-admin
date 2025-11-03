@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HausTap Bookings</title>
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/booking.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<link rel="stylesheet" href="/client/css/homepage.css"></head>
+<body><?php include dirname(__DIR__) . "/client/includes/header.php"; ?>
+
+  <!-- Skeleton Overlay -->
+  <div id="skeleton-overlay" class="skeleton-overlay">
+    <div class="skeleton-grid">
+      <div class="skeleton-row">
+        <div class="skeleton-block skeleton-line shimmer" style="width:50%"></div>
+      </div>
+      <div class="skeleton-line shimmer" style="width:90%"></div>
+      <div class="skeleton-line shimmer" style="width:85%"></div>
+      <div class="skeleton-row">
+        <div class="skeleton-circle"></div>
+        <div class="skeleton-block skeleton-line shimmer" style="width:30%"></div>
+        <div class="skeleton-block skeleton-line shimmer" style="width:15%"></div>
+      </div>
+      <div class="skeleton-row" style="margin-top:8px">
+        <div class="spinner" aria-hidden="true"></div>
+        <span style="font-size:14px;color:#555">Loading bookings…</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      var overlay = document.getElementById('skeleton-overlay');
+      function show(){ document.body.classList.add('loading'); overlay.style.display='block'; }
+      function hide(){ document.body.classList.remove('loading'); overlay.style.display='none'; }
+      window.HausTapLoading = { show: show, hide: hide };
+      show();
+      window.addEventListener('DOMContentLoaded', function(){ setTimeout(hide, 800); });
+    })();
+  </script>
+
+  <div class="page-content">
+
+  <!-- tabs -->
+  <div class="mytabs">
+    <input type="radio" id="tabpending" name="mytabs" checked="checked">
+      <label for="tabpending">Pending</label>
+      <div class="tab">
+        
+        <div class="booking_tables">
+        <div class="booking-header">
+          <div>
+            <h2>Home Cleaning</h2>
+            <p>Bungalow - Basic Cleaning</p>
+          </div>
+          <div class="booking-status">
+          <span>Booking ID</span>
+          <span class="status">|</span>
+          <span class="status">PENDING</span>
+          </div>
+        </div>
+        </div>
+        <!-- Details -->
+        <div class="booking-details">
+          <div class="detail">
+          <strong>Date</strong>
+          <p>May 21, 2025</p>
+          </div>
+          <div class="detail">
+          <strong>Time</strong>
+          <p>11:00 AM - 2:00 PM</p>
+          </div>
+          <div class="detail address">
+          <strong>Address</strong>
+          <p>B1 L50 Mango st. Phase 1 Saint Joseph Village 10<br>
+          Barangay Langgam, City of San Pedro, Laguna 4023</p>
+          </div>
+        </div>
+        <div class="booking-details">
+            <div class="detail full-width">
+              <span>Total:</span>
+              <span>2,500</span>
+            </div>
+        </div>
+
+        <!-- booking-footer -->
+        <div class="booking-footer">
+          <div class="total">
+            <strong></strong>
+            <span></span>
+          </div>
+          <div class="actions">
+            <button class="proceed">Proceed</button>
+            <div class="dropdown">
+              <button class="btn btn-outline-dark dropdown-toggle" type="more" data-bs-toggle="dropdown">More</button>
+                <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Contact Seller</a></li>
+                <li><a class="dropdown-item" href="#">Buy Again</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="after-bookings">
+      <p>No more scheduled booking</p>
+    </div>
+
+      </div>
+      
+
+      <input type="radio" id="tabongoing" name="mytabs" checked="checked">
+      <label for="tabongoing">Ongoing</label>
+      <div class="tab">
+        <div class="booking_tables">
+        <div class="booking-header">
+          <div>
+            <h2>Home Cleaning</h2>
+            <p>Bungalow - Basic Cleaning</p>
+          </div>
+          <div class="booking-status">
+          <span>Booking ID</span>
+          <span class="status">ONGOING</span>
+          </div>
+        </div>
+        </div>
+        <!-- Details -->
+        <div class="booking-details">
+          <div class="detail">
+          <strong>Date</strong>
+          <p>May 21, 2025</p>
+          </div>
+          <div class="detail">
+          <strong>Time</strong>
+          <p>11:00 AM - 2:00 PM</p>
+          </div>
+          <div class="detail address">
+          <strong>Address</strong>
+          <p>B1 L50 Mango st. Phase 1 Saint Joseph Village 10<br>
+          Barangay Langgam, City of San Pedro, Laguna 4023</p>
+          </div>
+        </div>
+          <div class="booking-details">
+  <div class="detail full-width total-line">
+    <span class="label">Total:</span>
+    <span class="price">2,500</span>
+  </div>
+  <p class="payment-note">
+    Full payment will be collected directly by the service provider upon completion of the service.
+  </p>
+</div>
+
+        <!-- booking-footer -->
+        <div class="booking-footer">
+          <div class="service-provider">
+            <div class="service-provider-top">
+              <i class="fa-solid fa-user account-icon"></i>
+              <span class="name">Ana Santos</span>
+              <i class="fa-solid fa-comment message-icon"></i>
+            </div>
+            <div class="rating">
+              <i class="fa-solid fa-star" aria-hidden="true"></i> (4.9)
+            </div>
+          </div>
+          <div class="actions">
+            <div class="dropdown">
+              <button class="btn btn-outline-dark dropdown-toggle" type="view_progress" data-bs-toggle="dropdown">View Progress</button>
+              <ul class="dropdown-menu progress-menu">
+                <li><a class="dropdown-item" href="#"><b>View Progress</b></a></li>
+                <li><a class="dropdown-item" href="#">Timeline:</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fa-solid fa-square-check completed"></i> Worker confirmed</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fa-solid fa-square-check completed"></i> Worker arrived</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fa-solid fa-hourglass-half"></i> Service in progress</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fa-solid fa-circle-check" style="visibility:hidden"></i> Service completed</a></li>
+              </ul>
+            </div>
+            <div class="dropdown">
+              <button class="btn btn-outline-dark dropdown-toggle" type="more" data-bs-toggle="dropdown">More</button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Contact Seller</a></li>
+                <li><a class="dropdown-item" href="#">Buy Again</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+      <input type="radio" id="tabcompleted" name="mytabs" checked="checked">
+      <label for="tabcompleted">Completed</label>
+      <div class="tab">
+        <div class="booking_tables">
+        <div class="booking-header">
+          <div>
+            <h2>Home Cleaning</h2>
+            <p>Bungalow - Basic Cleaning</p>
+          </div>
+          <div class="booking-status">
+          <span>Booking ID</span>
+          <span class="status">COMPLETED</span>
+          </div>
+        </div>
+        </div>
+        <!-- Details -->
+        <div class="booking-details">
+          <div class="detail">
+          <strong>Date</strong>
+          <p>May 21, 2025</p>
+          </div>
+          <div class="detail">
+          <strong>Time</strong>
+          <p>11:00 AM - 2:00 PM</p>
+          </div>
+          <div class="detail address">
+          <strong>Address</strong>
+          <p>B1 L50 Mango st. Phase 1 Saint Joseph Village 10<br>
+          Barangay Langgam, City of San Pedro, Laguna 4023</p>
+          </div>
+        </div>
+        <div class="booking-details">
+            <div class="detail full-width">
+              <span>Total:</span>
+              <span>2,500</span>
+            </div>
+        </div>
+
+        <!-- booking-footer -->
+        <div class="booking-footer">
+          <div class="service-provider">
+            <div class="service-provider-top">
+              <i class="fa-solid fa-user account-icon"></i>
+              <span class="name">Ana Santos</span>
+              <i class="fa-solid fa-comment message-icon"></i>
+            </div>
+            <div class="rating">
+              <i class="fa-solid fa-star" aria-hidden="true"></i> (4.9)
+            </div>
+          </div>
+          <div class="actions">
+            <button class="rate">Rate</button>
+            <div class="dropdown">
+              <button class="btn btn-outline-dark" type="button" data-bs-toggle="dropdown">
+                Request for Return
+              </button>
+            <div class="dropdown-menu request-return p-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">Service Issue. How Can We Help?</h6>
+              <button type="button" class="btn-close" data-bs-dismiss="dropdown" aria-label="Close"></button>
+              </div>
+<!-- Option 1 -->
+              <div class="form-check border p-2 mb-2 rounded">
+                <input class="form-check-input" type="checkbox" id="issue1" checked>
+                <label class="form-check-label fw-bold" for="issue1">
+                The service was completed, but I have issues
+                </label>
+                <small class="text-muted d-block">
+                I received service that is incomplete, defective, or not as agreed.
+                </small>
+              </div>
+
+<!-- Option 2 -->
+              <div class="form-check border p-2 rounded">
+                <input class="form-check-input" type="checkbox" id="issue2">
+                <label class="form-check-label fw-bold" for="issue2">
+                The service was not fully completed
+                </label>
+                <small class="text-muted d-block">
+                 Missing work, incomplete tasks, or service provider left early.
+                </small>
+              </div>
+            </div>
+            <div class="dropdown">
+              <button class="btn btn-outline-dark" type="more" data-bs-toggle="dropdown">More</button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Contact Seller</a></li>
+            <li><a class="dropdown-item" href="#">Buy Again</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="return-reminder">
+  Reminder: You may request a return for free within 24 hours after the service. <br>
+  After 24 hours, a 300 return fee will be charged.
+</p>
+      </div>
+
+      <input type="radio" id="tabcancelled" name="mytabs" checked="checked">
+      <label for="tabcancelled">Cancelled</label>
+      <div class="tab">
+        <div class="booking_tables">
+        <div class="booking-header">
+          <div>
+            <h2>Home Cleaning</h2>
+            <p>Bungalow - Basic Cleaning</p>
+          </div>
+          <div class="booking-status">
+          <span>Booking ID</span>
+          <span class="status">CANCELLED</span>
+          </div>
+        </div>
+        </div>
+        <!-- Details -->
+        <div class="booking-details">
+          <div class="detail">
+          <strong>Date</strong>
+          <p>May 21, 2025</p>
+          </div>
+          <div class="detail">
+          <strong>Time</strong>
+          <p>11:00 AM - 2:00 PM</p>
+          </div>
+          <div class="detail address">
+          <strong>Address</strong>
+          <p>B1 L50 Mango st. Phase 1 Saint Joseph Village 10<br>
+          Barangay Langgam, City of San Pedro, Laguna 4023</p>
+          </div>
+        </div>
+        <div class="booking-details">
+            <div class="detail full-width">
+              <span>Total:</span>
+              <span>2,500</span>
+            </div>
+        </div>
+
+        <!-- booking-footer -->
+        <div class="booking-footer">
+          <div class="service-provider">
+            <div class="service-provider-top">
+              <i class="fa-solid fa-user account-icon"></i>
+              <span class="name">Ana Santos</span>
+              <i class="fa-solid fa-comment message-icon"></i>
+            </div>
+            <div class="rating">
+              <i class="fa-solid fa-star" aria-hidden="true"></i> (4.9)
+            </div>
+          </div>
+          <div class="actions">
+            <div class="dropdown">
+              <button class="btn btn-outline-dark dropdown-toggle" type="more" data-bs-toggle="dropdown">View Cancellation Details</button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">View Full Cancellation Details</a></li>
+                <li><a class="dropdown-item" href="#">Book Again</a></li>
+                <li><a class="dropdown-item" href="#">Contact Support</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+          <p class="cancellation_details">View Cancellation Policy</p>
+      </div>
+    </div>
+
+  
+  
+    <!-- FOOTER -->
+  <?php include dirname(__DIR__) . "/client/includes/footer.php"; ?>
+  </div>
+</body>
+</html>

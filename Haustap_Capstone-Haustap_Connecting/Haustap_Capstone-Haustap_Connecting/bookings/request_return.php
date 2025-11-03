@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HausTap Bookings</title>
+  <link rel="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/request_return.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="/client/css/homepage.css"></head>
+<body><?php include dirname(__DIR__) . "/client/includes/header.php"; ?>
+
+<!-- Header -->
+   <div class="header">
+    <img src="/bookings/images/logo.png" alt="HausTap" class="logo-img">
+    <nav class="nav">
+      <a href="#">Home</a>
+      <a href="#">Services</a>
+      <a href="#" class="active">Bookings</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+    </nav>
+    <div class="header-right">
+      <div class="search-box">
+        <input type="text" placeholder="Search services">
+<i class="fa-solid fa-search"></i>
+      </div>
+      <a href="#" class="icon-button account-link">
+        <i class="bi bi-person-circle"></i>
+        <span>My Account</span>
+      </a>
+    </div>
+  </div>
+
+<!-- REQUEST RETURN PAGE -->
+<section class="request-return-page">
+
+  <!-- Header outside the boxes -->
+  <h2 class="request-return-title">Request Return</h2>
+
+  <!-- Box 1 -->
+  <div class="request-box">
+    <div class="help-section">
+      <h3>How Can We Help?</h3>
+      <span class="free-return">| FREE RETURN</span>
+    </div>
+  </div>
+
+  <!-- Box 2 -->
+  <div class="request-box">
+    <div class="product-section">
+      <h3>Product You Want to Return</h3>
+      <p class="product-title">Home Cleaning</p>
+      <p class="product-sub">Bungalow - Basic Cleaning</p>
+    </div>
+  </div>
+
+  <!-- Box 3 -->
+  <div class="request-box">
+    <div class="reason-section">
+      <h3>Why Do You Want to Return?</h3>
+
+      <div class="reason-row">
+        <label for="reason">Reason:</label>
+        <select id="reason" name="reason" required>
+        <option value="" disabled selected hidden>Select a reason</option>
+          <option>Service not delivered (no-show)</option>
+          <option>Incomplete service (not finished)</option>
+          <option>Wrong service provided</option>
+          <option>Poor service quality</option>
+          <option>Tools/Equipment issue</option>
+          <option>Property damaged during service</option>
+          <option>Miscommunication in booking details</option>
+          <option>Safety concern</option>
+          <option>Promised inclusions not delivered</option>
+          <option>Double booking issue</option>
+          <option>Changed mind after service result</option>
+          <option>Others (please specify)</option>
+        </select>
+      </div>
+
+      <div class="description-row">
+        <label for="description">Description:</label>
+        <textarea id="description" placeholder="Leave your comments here"></textarea>
+      </div>
+
+      <div class="button-row">
+        <button class="cancel-btn">Cancel</button>
+        <button class="submit-btn">Submit</button>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+ <!-- FOOTER -->
+  <?php include dirname(__DIR__) . "/client/includes/footer.php"; ?>
+</body>
+</html>
+
+
