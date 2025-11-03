@@ -11,13 +11,13 @@ Top-level `.env` loader lives in `bootstrap.php`. It loads:
 Environment variables are made available via `getenv()` and `$_ENV` to all PHP scripts.
 
 Included templates:
-- Root: `.env.example`, `.env.development`, `.env.staging`, `.env.production`
-- Backend: `backend/.env.example`, `backend/.env.development`, `backend/.env.staging`, `backend/.env.production`
+- Root: `.env.example`, `.env.development.example`, `.env.staging.example`, `.env.production.example`
+- Backend: `backend/.env.example`, `backend/.env.development.example`, `backend/.env.staging.example`, `backend/.env.production.example`
 
 Recommended usage:
-- Development: copy `.env.development` to `.env` at repo root. For backend, copy `backend/.env.development` to `backend/.env`.
-- Staging: copy `.env.staging` to `.env` (root) and `backend/.env.staging` to `backend/.env` on the staging server.
-- Production: copy `.env.production` to `.env` (root) and `backend/.env.production` to `backend/.env` on the production server.
+- Development: copy `.env.development.example` to `.env` at repo root. For backend, copy `backend/.env.development.example` to `backend/.env`.
+- Staging: copy `.env.staging.example` to `.env` (root) and `backend/.env.staging.example` to `backend/.env` on the staging server.
+- Production: copy `.env.production.example` to `.env` (root) and `backend/.env.production.example` to `backend/.env` on the production server.
 
 Sensitive values (`DB_PASSWORD`, `SMTP_PASS`) must be set on each server; never commit secrets.
 
@@ -152,4 +152,3 @@ The mobile app lives in `android-capstone-main/HausTap/`.
 Notes:
 - `.env` is intentionally ignored by Git; only `.env.example` is committed.
 - `process.env.EXPO_OS` comes from Expo; you do not need to set it.
-

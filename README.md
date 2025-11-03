@@ -20,10 +20,11 @@ No UI or UX changes are introduced by this document.
 
 ## Environment Files
 
-- Root examples: `.env.example`, `.env.development`, `.env.staging`, `.env.production`
+- Root examples: `.env.example`, `.env.development.example`, `.env.staging.example`, `.env.production.example`
+- Backend examples: `backend/.env.example`, `backend/.env.development.example`, `backend/.env.staging.example`, `backend/.env.production.example`
 - Mobile app: `android-capstone-main/HausTap/.env`
 
-Create local `.env` files from the provided examples and fill credentials as needed. Secrets are ignored by Git.
+Create local `.env` files from the provided examples and fill credentials as needed. Secrets are ignored by Git. Example: copy `.env.development.example` to `.env` (root) and `backend/.env.development.example` to `backend/.env` for local development.
 
 ## Quick Start After Pull
 
