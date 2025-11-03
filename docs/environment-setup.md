@@ -130,4 +130,26 @@ Key variables:
 - Do not commit secrets.
 - Ensure CI/CD replaces `.env` files per environment during deploy.
 - For Windows IIS, map sites to the two directories and enable PHP.
+ - For onboarding, you can pull the tag `v0.1.0-onboarding` to ensure a consistent snapshot.
+### Mobile App (Expo)
+
+The mobile app lives in `android-capstone-main/HausTap/`.
+
+- Create a local env file:
+  - Copy `android-capstone-main/HausTap/.env.example` to `android-capstone-main/HausTap/.env`.
+  - Set `GMAIL_USER` and `GMAIL_APP_PASSWORD` (use a Gmail App Password or SMTP credentials).
+  - Optional: adjust `PORT` if `3000` is busy.
+
+- Start the local email/Express server:
+  - `cd android-capstone-main/HausTap`
+  - `npm install`
+  - `npm run server` (reads config from `.env`)
+
+- Run the Expo app:
+  - In the same directory: `npm start`
+  - Open with Android emulator, iOS simulator, or Expo Go.
+
+Notes:
+- `.env` is intentionally ignored by Git; only `.env.example` is committed.
+- `process.env.EXPO_OS` comes from Expo; you do not need to set it.
 
