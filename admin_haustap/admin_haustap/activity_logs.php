@@ -5,30 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | Activity Logs</title>
   <link rel="stylesheet" href="css/activity_logs.css" />
-</head>
+<script src="js/lazy-images.js" defer></script></head>
 <body>
   <div class="dashboard-container">
     <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="logo">
-        <img src="/admin_haustap/admin_haustap/images/logo.png" alt="logo" />
-        <span>Admin Dashboard</span>
-      </div>
-      <nav>
-        <ul>
-          <li class="active">Dashboard Overview</li>
-          <li>Manage Applicants</li>
-          <li>Manage Clients</li>
-          <li>Manage Providers</li>
-          <li>Manage Bookings</li>
-          <li>Job Status Monitor</li>
-          <li>Analytics & Report</li>
-          <li>Subscription Management</li>
-          <li>Feedback & Reviews</li>
-          <li>System Settings</li>
-        </ul>
-      </nav>
-    </aside>
+    <?php $active = 'dashboard'; include 'includes/sidebar.php'; ?>
 
     <!-- Main content -->
     <main class="main-content">
@@ -154,4 +135,5 @@
   </script>
 </body>
 </html>
+
 

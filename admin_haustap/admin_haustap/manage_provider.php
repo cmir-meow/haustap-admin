@@ -6,30 +6,11 @@
   <title>Manage Providers</title>
   <link rel="stylesheet" href="css/manage_provider.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-</head>
+<script src="js/lazy-images.js" defer></script></head>
 <body>
   <div class="dashboard-container">
     <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="logo">
-        <img src="/admin_haustap/admin_haustap/images/logo.png" alt="logo" />
-        <span>Admin Dashboard</span>
-      </div>
-      <nav>
-        <ul>
-          <li>Dashboard Overview</li>
-          <li>Manage Applicants</li>
-          <li>Manage Clients</li>
-          <li class="active">Manage Providers</li>
-          <li>Manage Bookings</li>
-          <li>Job Status Monitor</li>
-          <li>Analytics & Report</li>
-          <li>Subscription Management</li>
-          <li>Feedback & Reviews</li>
-          <li>System Settings</li>
-        </ul>
-      </nav>
-    </aside>
+    <?php $active = 'providers'; include 'includes/sidebar.php'; ?>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -164,4 +145,5 @@
   </script>
 </body>
 </html>
+
 

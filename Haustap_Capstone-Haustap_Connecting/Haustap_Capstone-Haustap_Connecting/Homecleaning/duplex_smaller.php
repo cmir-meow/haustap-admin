@@ -60,11 +60,11 @@
       <nav class="pagination">
         <ul>
             <li><a href="#">&laquo;</a></li>
-          <li><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
+          
+          
+          
+          
+          
             <li><a href="#">&raquo;</a></li>
         </ul>
       </nav>
@@ -113,7 +113,10 @@
           const href = (type && house) ? `/booking_process/booking_location.php?house=${encodeURIComponent(house)}&cleaning=${encodeURIComponent(type)}` : '#';
           nextLink && nextLink.setAttribute('href', href);
           persistLabel();
-        });
+          if (type && house) {
+            window.location.href = href;
+          }
+});
       });
 
       nextLink && nextLink.addEventListener('click', function (e) {
@@ -133,5 +136,6 @@
   </script>
 </body>
 </html>
+
 
 

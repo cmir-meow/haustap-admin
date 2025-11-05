@@ -162,11 +162,11 @@
     <nav class="pagination">
       <ul>
         <li><a href="#" aria-label="Previous">&laquo;</a></li>
-        <li><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
+        
+        
+        
+        
+        
         <li><a href="#" aria-label="Next">&raquo;</a></li>
       </ul>
     </nav>
@@ -179,7 +179,7 @@
     const nextLink = document.querySelector('nav.pagination a[aria-label="Next"]');
     const radios = document.querySelectorAll('input.house-radio');
 
-    // Map radio IDs to their target pages
+    // Map radio IDs to their house-specific pages for cleaning type selection
     const routeMap = {
       'bungalow': '/Homecleaning/bungalow.php',
       'condo-studio': '/Homecleaning/condo_studio.php',
@@ -212,6 +212,10 @@
       r.addEventListener('change', () => {
         const route = getSelectedRoute();
         nextLink.setAttribute('href', route || '#');
+        // Navigate immediately when a house type is selected
+        if (route) {
+          window.location.href = route;
+        }
       });
     });
 
@@ -229,4 +233,5 @@
   </script>
 </body>
 </html>
+
 

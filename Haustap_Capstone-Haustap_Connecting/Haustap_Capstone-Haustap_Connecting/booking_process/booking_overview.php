@@ -89,11 +89,11 @@
     <!-- PAGINATION -->
     <div class="pagination">
       <button>&lt;</button>
-      <button class="active">1</button>
-      <button class="active">2</button>
-      <button class="active">3</button>
-      <button class="active">4</button>
-      <button class="active">5</button>
+      
+      
+      
+      
+      
       <button>&gt;</button>
     </div>
   </main>
@@ -104,10 +104,11 @@
     (function(){
       // Read selections from localStorage without altering the markup or layout
       function get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+      var TZ = 'Asia/Manila';
       function formatDate(iso){
         try {
           var d = new Date(iso);
-          return d.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' });
+          return new Intl.DateTimeFormat('en-US', { timeZone: TZ, year:'numeric', month:'short', day:'numeric' }).format(d);
         } catch(e){ return iso; }
       }
       function formatTime(hhmm){
@@ -128,8 +129,8 @@
       // Update service header text if available (content only)
       var h2 = document.querySelector('.service-header h2');
       var h3 = document.querySelector('.service-header h3');
-      if (h2 && serviceName) { h2.textContent = serviceName; }
-      if (h3 && providerName) { h3.textContent = providerName; }
+      if (h3 && serviceName) { h3.innerHTML = '<strong>' + serviceName + '</strong>'; }
+      if (h2 && providerName) { h2.textContent = providerName; }
 
       // Update details lines by matching labels; keep structure same
       var detailPs = Array.prototype.slice.call(document.querySelectorAll('.details p'));
@@ -145,6 +146,25 @@
           p.innerHTML = '<strong>Address:</strong> ' + address;
         }
       });
+
+      // Update "You selected" line with the chosen service name
+      var multiLines = Array.prototype.slice.call(document.querySelectorAll('.details p.multi-line'));
+      if (multiLines.length) {
+        var selectedLine = multiLines[0];
+        var bEl = selectedLine ? selectedLine.querySelector('b') : null;
+        if (bEl && serviceName) { bEl.textContent = serviceName; }
+      }
+
+      // Update subtotal and total to reflect selected price
+      var price = (function(){ try { var v = localStorage.getItem('selected_service_price'); return v ? Number(v) : 0; } catch(e){ return 0; } })();
+      var summarySpans = Array.prototype.slice.call(document.querySelectorAll('.summary span'));
+      if (summarySpans.length >= 2) {
+        var subtotalEl = summarySpans[0];
+        var totalEl = summarySpans[summarySpans.length-1];
+        var formattedPrice = '₱' + price.toFixed(2);
+        if (subtotalEl) subtotalEl.textContent = formattedPrice;
+        if (totalEl) totalEl.textContent = formattedPrice;
+      }
 
       // Persist notes typing for use on confirm page
       var notesEl = document.getElementById('notes');
@@ -164,10 +184,12 @@
           var back = btns[0];
           var next = btns[btns.length-1];
           if (back) back.addEventListener('click', function(){ window.location.href = '/booking/schedule'; });
-          if (next) next.addEventListener('click', function(){ window.location.href = '/booking/confirm'; });
+          // After overview, go to Choose Service Provider step
+          if (next) next.addEventListener('click', function(){ window.location.href = '/booking/choose-sp'; });
         }
       }
     })();
   </script>
 </body>
 </html>
+

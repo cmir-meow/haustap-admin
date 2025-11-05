@@ -94,9 +94,29 @@
         </ul>
       </div>
     </div>
-  </main>
+</main>
   <!-- FOOTER -->
   <?php include dirname(__DIR__) . "/client/includes/footer.php"; ?>
+  <script>
+    // On AC service selection, proceed to Booking Location with label
+    document.addEventListener('DOMContentLoaded', function(){
+      const radios = document.querySelectorAll('input.service-radio');
+      function getLabel(radio){
+        const card = radio.closest('.service-card');
+        const title = card ? card.querySelector('.service-title') : null;
+        return title ? (title.textContent || '').trim() : '';
+      }
+      function proceed(radio){
+        const label = getLabel(radio);
+        try { localStorage.setItem('selected_service_name', label); } catch(e){}
+        window.location.href = '/booking_process/booking_location.php?service=' + encodeURIComponent(label);
+      }
+      radios.forEach(function(r){
+        r.addEventListener('change', function(){ if (r.checked) proceed(r); });
+        r.addEventListener('click', function(){ if (r.checked) proceed(r); });
+      });
+    });
+  </script>
 </body>
 </html>
 

@@ -63,10 +63,10 @@
     <!-- Pagination -->
     <div class="pagination">
       <button>&lt;</button>
-      <button>1</button>
-      <button>2</button>
-      <button>3</button>
-      <button>4</button>
+      
+      
+      
+      
       <button>&gt;</button>
     </div>
   </main>
@@ -75,5 +75,6 @@
   <?php include dirname(__DIR__) . "/client/includes/footer.php"; ?>
 </body>
 </html>
+
 
 

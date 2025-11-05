@@ -60,11 +60,11 @@
       <nav class="pagination">
         <ul>
             <li><a href="#">&laquo;</a></li>
-          <li><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
+          
+          
+          
+          
+          
             <li><a href="#">&raquo;</a></li>
         </ul>
       </nav>
@@ -72,7 +72,70 @@
   </main>
   <!-- FOOTER -->
   <?php include dirname(__DIR__) . "/client/includes/footer.php"; ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const nextLink = document.querySelector('nav.pagination ul li:last-child a');
+      const radios = document.querySelectorAll('input.cleaning-radio');
+      const typeBtn = document.querySelector('.cleaning-type-btn');
+
+      function getSelectedRadio() {
+        return document.querySelector('input.cleaning-radio:checked');
+      }
+
+      function normalizeCleaning(id) {
+        return id ? id.replace('-cleaning', '') : null;
+      }
+
+      function getHouseSlug() {
+        const txt = typeBtn ? (typeBtn.textContent || '').trim() : '';
+        return txt.toLowerCase().replace(/\s+/g, '-');
+      }
+
+      function getSelectedTitle() {
+        const checked = getSelectedRadio();
+        const card = checked ? checked.closest('.cleaning-card') : null;
+        const titleEl = card ? card.querySelector('.cleaning-title') : null;
+        return titleEl ? titleEl.textContent.trim() : '';
+      }
+
+      function persistLabel() {
+        const house = typeBtn ? (typeBtn.textContent || '').trim() : '';
+        const title = getSelectedTitle();
+        const label = house && title ? `${house} - ${title}` : house || title;
+        try { localStorage.setItem('selected_service_name', label); } catch(e){}
+      }
+
+      radios.forEach(radio => {
+        radio.addEventListener('change', () => {
+          const id = getSelectedRadio()?.id || null;
+          const type = normalizeCleaning(id);
+          const house = getHouseSlug();
+          const href = (type && house) ? `/booking_process/booking_location.php?house=${encodeURIComponent(house)}&cleaning=${encodeURIComponent(type)}` : '#';
+          nextLink && nextLink.setAttribute('href', href);
+          persistLabel();
+          if (type && house) {
+            window.location.href = href;
+          }
+        });
+      });
+
+      nextLink && nextLink.addEventListener('click', function (e) {
+        const id = getSelectedRadio()?.id || null;
+        const type = normalizeCleaning(id);
+        const house = getHouseSlug();
+        if (!type) {
+          e.preventDefault();
+          alert('Please select a cleaning type first.');
+          return;
+        }
+        persistLabel();
+        e.preventDefault();
+        window.location.href = `/booking_process/booking_location.php?house=${encodeURIComponent(house)}&cleaning=${encodeURIComponent(type)}`;
+      });
+    });
+  </script>
 </body>
 </html>
+
 
 

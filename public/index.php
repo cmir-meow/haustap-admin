@@ -2,16 +2,52 @@
 declare(strict_types=1);
 
 require __DIR__ . '/../bootstrap.php';
+// Debug: log each request path coming through the router
+error_log('[router] request: ' . ($_SERVER['REQUEST_URI'] ?? '')); 
 
 use Core\Router;
 use App\Controllers\Guest\HomeController;
 use App\Controllers\Admin\DashboardController;
+use App\Controllers\Admin\ApplicantsController;
+use App\Controllers\Admin\AnalyticsController;
 
 $router = new Router();
 
 // Friendly routes using controllers
 $router->get('/', fn() => (new HomeController())->index());
 $router->get('/admin', fn() => (new DashboardController())->index());
+
+// Explicit admin legacy page routes to ensure dev-server compatibility
+$router->get('/admin_haustap/admin_haustap/dashboard.php', function() {
+    error_log('[router] explicit route hit: admin dashboard');
+    run_php(ADMIN_APP_PATH . '/dashboard.php');
+});
+$router->get('/admin_haustap/admin_haustap/manage_applicant.php', function() {
+    error_log('[router] explicit route hit: manage applicant');
+    run_php(ADMIN_APP_PATH . '/manage_applicant.php');
+});
+
+// Catch-all for legacy admin paths: /admin_haustap/admin_haustap/<anything>
+$router->get('/admin_haustap/admin_haustap/*', function() {
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $prefix = '/admin_haustap/admin_haustap/';
+    $rel = substr($path, strlen($prefix));
+    if ($rel === false || $rel === '') { $rel = 'dashboard.php'; }
+    $candidate = ADMIN_APP_PATH . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $rel);
+    if (is_file($candidate)) {
+        $ext = strtolower(pathinfo($candidate, PATHINFO_EXTENSION));
+        if ($ext === 'php') { run_php($candidate); return; }
+        serve_static($candidate); return;
+    }
+    http_response_code(404);
+    echo 'Not Found';
+});
+
+// Admin JSON API routes
+$router->get('/api/admin/applicants', fn() => (new ApplicantsController())->index());
+$router->get('/api/admin/analytics/summary', fn() => (new AnalyticsController())->summary());
+// Trailing-slash tolerant route for analytics summary
+$router->get('/api/admin/analytics/summary/', fn() => (new AnalyticsController())->summary());
 
 // Friendly routes mapping legacy PHP pages to clean paths
 // Auth
@@ -71,6 +107,19 @@ if (strpos($uri, $ADMIN_PREFIX) === 0) {
     $rel = substr($uri, strlen($ADMIN_PREFIX)); // e.g. /dashboard.php or /css/style.css
     if ($rel === false || $rel === '') { $rel = '/'; }
     $adminResolved = ADMIN_APP_PATH . str_replace('/', DIRECTORY_SEPARATOR, $rel);
+}
+
+// Early guard: if request targets admin app and the target file exists, serve it immediately
+if ($adminResolved && is_file($adminResolved)) {
+    $ext = strtolower(pathinfo($adminResolved, PATHINFO_EXTENSION));
+    if ($ext === 'php') {
+        error_log('[router] early admin php: ' . $adminResolved);
+        run_php($adminResolved);
+        return true;
+    }
+    error_log('[router] early admin asset: ' . $adminResolved);
+    serve_static($adminResolved);
+    return true;
 }
 
 // Serve static assets by streaming with the correct content type
@@ -135,8 +184,14 @@ if (preg_match('/\.(?:png|jpg|jpeg|gif|svg|css|js|ico|woff2?|ttf|map)$/i', $uri)
 }
 
 // Direct PHP file
-if (is_file($sitePath) && substr($sitePath, -4) === '.php') { run_php($sitePath); return true; }
-if ($adminResolved && is_file($adminResolved) && substr($adminResolved, -4) === '.php') { run_php($adminResolved); return true; }
+if (is_file($sitePath) && substr($sitePath, -4) === '.php') { 
+    error_log('[router] site direct php: ' . $sitePath);
+    run_php($sitePath); return true; 
+}
+if ($adminResolved && is_file($adminResolved) && substr($adminResolved, -4) === '.php') { 
+    error_log('[router] admin direct php: ' . $adminResolved);
+    run_php($adminResolved); return true; 
+}
 
 // Directory index
 if (is_dir($sitePath)) {
@@ -151,9 +206,11 @@ if ($adminResolved && is_dir($adminResolved)) {
 // If the request is for the admin prefix but no file matched, return 404 here
 if (strpos($uri, $ADMIN_PREFIX) === 0) {
     http_response_code(404);
+    error_log('[router] admin 404 for uri: ' . $uri);
     echo 'Not Found';
     return true;
 }
 
 // Fallback to original site router for its custom logic (e.g., mock-api)
 require SITE_APP_PATH . '/router.php';
+return true;

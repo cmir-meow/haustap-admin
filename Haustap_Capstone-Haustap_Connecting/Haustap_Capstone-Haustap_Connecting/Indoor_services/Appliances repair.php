@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -233,6 +233,11 @@
 document.addEventListener('DOMContentLoaded', function(){
   var activeTab = document.querySelector('.tabs .tab.active');
   function norm(txt){ return String(txt||'').replace(/\s+/g,' ').trim(); }
+  function parsePriceText(txt){
+    var cleaned = String(txt||'').replace(/,/g,'');
+    var m = cleaned.match(/(\d+(?:\.\d+)?)/);
+    return m ? Number(m[1]) : null;
+  }
   document.addEventListener('change', function(e){
     var t = e.target;
     if (t && t.matches('input[type=\"radio\"][name=\"service\"]')) {
@@ -241,8 +246,19 @@ document.addEventListener('DOMContentLoaded', function(){
       var subcat = activeTab ? norm(activeTab.textContent) : 'Indoor Services';
       var serviceTitle = titleEl ? norm(titleEl.textContent) : (t.id || t.value || '').trim();
       var label = subcat + ' - ' + serviceTitle;
-      try { localStorage.setItem('selected_service_name', label); } catch(err){}
-      window.location.href = '/booking_process/booking_location.php?service=' + encodeURIComponent(label);
+      try {
+        localStorage.setItem('selected_service_name', label);
+        var pEl = card ? card.querySelector('.service-price') : null;
+        var price = pEl ? parsePriceText(pEl.textContent) : null;
+        if (price != null && !isNaN(price)) {
+          localStorage.setItem('selected_service_price', String(price));
+        }
+      } catch(err){}
+      var url = '/booking_process/booking_location.php?service=' + encodeURIComponent(label);
+      var pEl2 = card ? card.querySelector('.service-price') : null;
+      var price2 = pEl2 ? parsePriceText(pEl2.textContent) : null;
+      if (price2 != null && !isNaN(price2)) { url += '&price=' + encodeURIComponent(String(price2)); }
+      window.location.href = url;
     }
   });
 });

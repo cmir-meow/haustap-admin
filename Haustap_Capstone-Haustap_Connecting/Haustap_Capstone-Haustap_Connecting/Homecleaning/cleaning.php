@@ -147,14 +147,39 @@
         try { localStorage.setItem('selected_service_name', label); } catch (e) {}
       }
 
+      function parsePriceText(txt) {
+        const cleaned = String(txt || '').replace(/,/g, '');
+        const m = cleaned.match(/(\d+(?:\.\d+)?)/);
+        return m ? Number(m[1]) : null;
+      }
+      function persistPrice() {
+        const r = getSelectedRadio();
+        const pkg = r ? r.closest('.cleaning-package') : null;
+        const p = pkg ? pkg.querySelector('.price') : null;
+        const price = p ? parsePriceText(p.textContent) : null;
+        try {
+          if (price != null && !isNaN(price)) {
+            localStorage.setItem('selected_service_price', String(price));
+          }
+        } catch (e) {}
+      }
+
       packageRadios.forEach(radio => {
         radio.addEventListener('change', () => {
           // Persist and immediately redirect on selection
           persistLabel();
+          // get price for query param pass-through
+          const r = getSelectedRadio();
+          const pkg = r ? r.closest('.cleaning-package') : null;
+          const pEl = pkg ? pkg.querySelector('.price') : null;
+          const pVal = pEl ? parsePriceText(pEl.textContent) : null;
+          persistPrice();
           const type = getCleaningType();
           const house = getHouseSlug();
           if (type) {
-            window.location.href = `/booking_process/booking_location.php?house=${encodeURIComponent(house)}&cleaning=${encodeURIComponent(type)}`;
+            let url = `/booking_process/booking_location.php?house=${encodeURIComponent(house)}&cleaning=${encodeURIComponent(type)}`;
+            if (pVal != null && !isNaN(pVal)) { url += `&price=${encodeURIComponent(String(pVal))}`; }
+            window.location.href = url;
           }
         });
       });
@@ -176,7 +201,15 @@
             return;
           }
           persistLabel();
-          window.location.href = `/booking_process/booking_location.php?house=${encodeURIComponent(house)}&cleaning=${encodeURIComponent(type)}`;
+          // get price for query param pass-through
+          const r = getSelectedRadio();
+          const pkg = r ? r.closest('.cleaning-package') : null;
+          const pEl = pkg ? pkg.querySelector('.price') : null;
+          const pVal = pEl ? parsePriceText(pEl.textContent) : null;
+          persistPrice();
+          let url = `/booking_process/booking_location.php?house=${encodeURIComponent(house)}&cleaning=${encodeURIComponent(type)}`;
+          if (pVal != null && !isNaN(pVal)) { url += `&price=${encodeURIComponent(String(pVal))}`; }
+          window.location.href = url;
         });
       }
     });

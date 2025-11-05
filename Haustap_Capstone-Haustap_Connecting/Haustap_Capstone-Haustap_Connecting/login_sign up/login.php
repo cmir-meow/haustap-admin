@@ -10,7 +10,9 @@
   <script src="/login_sign%20up/js/api.js"></script>
   <div class="container">
     <div class="logo">
-      <img src="/login_sign%20up/image/logo.png" alt="HausTap Logo" width="120" height="100">
+      <a href="/guest/homepage.php" aria-label="Go to homepage">
+        <img src="/login_sign%20up/image/logo.png" alt="HausTap Logo" width="120" height="100">
+      </a>
     </div>
     <form class="login-form">
       <h2>Log In</h2>

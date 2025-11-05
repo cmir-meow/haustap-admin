@@ -46,3 +46,65 @@ $logoSrc = $context === 'client' ? '/client/images/logo.png' : '/guest/images/lo
   </div>
   <div class="footer-bottom">2025 HausTap. All Rights Reserved.</div>
 </footer>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  try {
+    var prevNavs = document.querySelectorAll('nav.pagination a[aria-label="Previous"]');
+    prevNavs.forEach(function(el){
+      el.addEventListener('click', function(e){ e.preventDefault(); window.history.back(); });
+    });
+    var pagDivs = document.querySelectorAll('div.pagination');
+    pagDivs.forEach(function(pag){
+      var buttons = pag.querySelectorAll('button');
+      if (!buttons.length) return;
+      var prev = buttons[0];
+      if (prev && prev.textContent.trim() === '<') {
+        prev.addEventListener('click', function(e){ e.preventDefault(); window.history.back(); });
+      }
+    });
+  } catch (e) {}
+});
+</script>
+<script>
+// Client-side repair for common mojibake sequences caused by prior mis-encoding
+document.addEventListener('DOMContentLoaded', function () {
+  try {
+    var map = {
+      'â€“': '–',
+      'â€”': '—',
+      'â€˜': '‘',
+      'â€™': '’',
+      'â€œ': '“',
+      'â€': '”',
+      'â€¢': '•',
+      'â€¦': '…',
+      'Â ': ' ',
+      'Â': '',
+      'â‚±': '₱',
+      'â˜…': '★',
+      'âœ”': '✔',
+      'â†�': '←',
+      'ðŸ“·': '📷',
+      'ðŸŽ¥': '🎥'
+    };
+    function replaceText(s){
+      var out = s;
+      for (var k in map) {
+        if (!Object.prototype.hasOwnProperty.call(map, k)) continue;
+        out = out.split(k).join(map[k]);
+      }
+      return out;
+    }
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+    var node;
+    var changed = 0;
+    while (node = walker.nextNode()) {
+      var t = node.nodeValue;
+      var r = replaceText(t);
+      if (r !== t) { node.nodeValue = r; changed++; }
+    }
+    // Optionally log to console for debugging
+    // if (changed) console.debug('Mojibake text repaired:', changed);
+  } catch (e) {}
+});
+</script>

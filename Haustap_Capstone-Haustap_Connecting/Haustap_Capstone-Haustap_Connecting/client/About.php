@@ -75,7 +75,7 @@
 
       <div class="feature">
         <h4>All-in-One Home & Lifestyle Care</h4>
-        <p>From cleaning and repairs to tech supportâ€”everything you need in one place.</p>
+        <p>From cleaning and repairs to tech support&mdash;everything you need in one place.</p>
       </div>
 
       <div class="feature">
