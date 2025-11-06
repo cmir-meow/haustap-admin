@@ -37,18 +37,18 @@
           <div class="sidebar-nav-group">
             <h4><i class="fa-solid fa-user-circle"></i> My Account</h4>
             <ul>
-              <li><a href="#">Profile</a></li>
-              <li><a href="#">Addresses</a></li>
-              <li><a href="#">Privacy Settings</a></li>
+              <li><a href="/account">Profile</a></li>
+              <li><a href="/account/address">Addresses</a></li>
+              <li><a href="/account/privacy">Privacy Settings</a></li>
             </ul>
           </div>
           <ul class="sidebar-secondary">
-            <li><i class="fa-solid fa-user-group"></i> Referral</li>
-            <li><a href="#" class="active"><i class="fa-solid fa-ticket"></i> My Vouchers</a></li>
-            <li><i class="fa-solid fa-link"></i> Connect Haustap</li>
-            <li><i class="fa-solid fa-file-contract"></i> Terms and Conditions</li>
-            <li><i class="fa-solid fa-star"></i> Rate HOMI</li>
-            <li><i class="fa-solid fa-circle-info"></i> About us</li>
+            <li><a href="/account/referral" class="account-link"><i class="fa-solid fa-user-group"></i> Referral</a></li>
+            <li><a href="/account/voucher" class="active"><i class="fa-solid fa-ticket"></i> My Vouchers</a></li>
+            <li><a href="/account/connect" class="account-link"><i class="fa-solid fa-link"></i> Connect Haustap</a></li>
+            <li><a href="/account/terms" class="account-link"><i class="fa-solid fa-file-contract"></i> Terms and Conditions</a></li>
+            <li><a href="/client/homepage.php#testimonials" class="account-link"><i class="fa-solid fa-star"></i> Rate HOMI</a></li>
+            <li><a href="/about" class="account-link"><i class="fa-solid fa-circle-info"></i> About us</a></li>
           </ul>
 
           <button class="logout-btn">Log out</button>
@@ -126,5 +126,55 @@
 
   <!-- FOOTER -->
 <?php include dirname(__DIR__) . "/client/includes/footer.php"; ?>
+  <script>
+    (function(){
+      function getStoredUser(){ try { return JSON.parse(localStorage.getItem('htUser')||'{}'); } catch(e){ return {}; } }
+      function computeDisplayName(user){ const name = (user && user.name || '').trim(); const first = (user && user.firstName || '').trim(); const last = (user && user.lastName || '').trim(); const email = (user && user.email || '').trim(); if (name) return name; const fl = [first,last].filter(Boolean).join(' ').trim(); if (fl) return fl; return ''; }
+      async function fetchVouchers(email){ const url = `/mock-api/vouchers?email=${encodeURIComponent(email)}`; const res = await fetch(url); const json = await res.json(); if (!json.success) throw new Error(json.message||'Failed'); return json.data; }
+
+      function renderHeader(user){ const nameEl = document.querySelector('.profile-name'); if (nameEl) { nameEl.textContent = computeDisplayName(user) || 'My Account'; } }
+
+      function renderLoyalty(loyalty){ try {
+        const circles = document.querySelectorAll('.progress-circles .circle');
+        // reset
+        circles.forEach((c,i)=>{ if (!c.classList.contains('final')) c.classList.remove('filled'); });
+        const fillCount = Math.min(Number(loyalty.completed||0), Math.max(0, Number(loyalty.required||10)-1));
+        let filled = 0;
+        circles.forEach((c)=>{
+          if (c.classList.contains('final')) return; if (filled < fillCount) { c.classList.add('filled'); filled++; }
+        });
+      } catch(e) {}
+      }
+
+      function renderExclusive(v){
+        // Keep existing UI/UX; optionally update texts if needed
+        const welcomeCard = Array.from(document.querySelectorAll('.voucher-card')).find(el => el.querySelector('h4')?.textContent?.includes('Welcome'));
+        const referralCard = Array.from(document.querySelectorAll('.voucher-card')).find(el => el.querySelector('h4')?.textContent?.includes('Referral'));
+        const loyaltyCard = Array.from(document.querySelectorAll('.voucher-card')).find(el => el.querySelector('h4')?.textContent?.includes('Loyalty'));
+        if (referralCard && v.referral) {
+          const pEls = referralCard.querySelectorAll('p');
+          const reward = v.referral.reward_amount || 10;
+          if (pEls[1]) { pEls[1].textContent = `Share HAUSTAP with friends! Once your friend completes their first booking, you earn ₱${reward} voucher.`; }
+        }
+        if (loyaltyCard && v.loyalty) {
+          const pEls = loyaltyCard.querySelectorAll('p');
+          const reward = v.loyalty.reward_amount || 50;
+          if (pEls[1]) { pEls[1].textContent = `After 10 completed bookings, enjoy a ₱${reward} voucher as our thank-you gift.`; }
+        }
+      }
+
+      async function init(){
+        const user = getStoredUser(); const email = (user.email||'').trim();
+        renderHeader(user);
+        try {
+          const vouchers = await fetchVouchers(email || 'example@haustap.local');
+          renderLoyalty(vouchers.loyalty||{});
+          renderExclusive(vouchers);
+        } catch(err){ console.warn('vouchers load failed', err); }
+      }
+
+      init();
+    })();
+  </script>
 </body>
 </html>

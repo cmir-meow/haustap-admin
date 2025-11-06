@@ -9,6 +9,11 @@ div {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Sticky layout so footer sits at the bottom when content is short */
+html, body { height: 100%; }
+body { min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1 0 auto; }
+
 /* Global header alignment baseline: match homepage layout across all pages */
 .header {
   display: flex !important;
@@ -68,6 +73,12 @@ body {
   flex: 0 0 auto !important;
 }
 
+/* Inline Sign up | Login links for guests */
+.auth-links { display: inline-flex !important; align-items: center !important; gap: 8px !important; white-space: nowrap !important; font-size: 14px !important; }
+.auth-links a { color: #3dbfc3 !important; text-decoration: none !important; cursor: pointer !important; }
+.auth-links a:hover { text-decoration: underline !important; color: #2aa3a8 !important; }
+.auth-links span { color: #999 !important; }
+
 .search-box {
   display: flex !important;
   align-items: center !important;
@@ -97,6 +108,18 @@ body {
   width: 28px !important;
   cursor: pointer !important;
 }
+
+/* Header icon + text: unify look across all client pages */
+.icon-link { color: #222 !important; text-decoration: none !important; display: inline-flex !important; align-items: center !important; }
+.icon-link i { font-size: 22px !important; color: #131313 !important; line-height: 1 !important; }
+.icon-link:hover i { color: #00cccc !important; }
+
+.account-link { display: inline-flex !important; align-items: center !important; gap: 6px !important; color: #222 !important; text-decoration: none !important; font-size: 16px !important; font-weight: 500 !important; }
+.account-icon { font-size: 20px !important; color: cyan !important; line-height: 1 !important; }
+.account-name { font-size: 16px !important; font-weight: 500 !important; color: #222 !important; }
+
+/* Keep notification badge positioning consistent if present */
+.notif-count { position: absolute !important; top: -6px !important; right: -6px !important; background: #ff3b30 !important; color: #fff !important; border-radius: 12px !important; padding: 0 6px !important; font-size: 12px !important; line-height: 18px !important; min-width: 18px !important; text-align: center !important; }
 
 /* --- Notifications (Bell) --- */
 .hidden { display: none !important; }
@@ -155,3 +178,24 @@ body {
 .toast[data-type="error"] { border-left-color: #ef4444; }
 .toast[data-type="warning"] { border-left-color: #f59e0b; }
 .toast[data-type="info"] { border-left-color: #3dbfc3; }
+
+/* ===== Footer (shared) ===== */
+footer { background: #fafafa; border-top: 1px solid #e5e7eb; margin-top: 24px; }
+.footer-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 24px;
+}
+.footer-left h4, .footer-right h4 { margin: 0 0 10px; font-size: 16px; color: #111; }
+.footer-left ul, .footer-right ul { list-style: none; margin: 0; padding: 0; }
+.footer-left li, .footer-right li { margin-bottom: 6px; font-size: 14px; color: #374151; }
+.footer-left a { text-decoration: none; color: #374151; }
+.footer-left a:hover { color: #009999; }
+.footer-center img { width: 140px; height: auto; display: block; margin-bottom: 8px; }
+.footer-center p { color: #6b7280; margin: 0; }
+.contact-info p { color: #6b7280; font-size: 14px; line-height: 1.5; }
+.footer-bottom { text-align: center; padding: 10px 16px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px; }

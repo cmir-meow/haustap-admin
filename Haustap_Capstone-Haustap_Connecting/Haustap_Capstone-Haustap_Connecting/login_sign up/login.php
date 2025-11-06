@@ -72,24 +72,14 @@
           localStorage.setItem('haustap_token', data.token);
           if (data?.user) {
             try {
-              const existingRaw = localStorage.getItem('haustap_user');
-              let existing = null;
-              try { existing = JSON.parse(existingRaw || 'null'); } catch {}
-
-              const combinedName = `${(existing?.firstName || '').trim()} ${(existing?.lastName || '').trim()}`.trim();
-              const preferExistingName = combinedName || '';
-
-              const merged = {
-                ...existing,
-                ...data.user,
-              };
-
-              // Ensure name reflects first+last if available
-              if (preferExistingName) {
-                merged.name = preferExistingName;
+              // Overwrite any stale local user cache with the fresh login payload
+              const u = { ...data.user };
+              // Robust fallback: if no name provided, derive from email local-part
+              if (!u.name || !String(u.name).trim()) {
+                const localPart = (email || '').split('@')[0] || '';
+                u.name = localPart || (u.email ? String(u.email).split('@')[0] : '');
               }
-
-              localStorage.setItem('haustap_user', JSON.stringify(merged));
+              localStorage.setItem('haustap_user', JSON.stringify(u));
             } catch {}
           }
 

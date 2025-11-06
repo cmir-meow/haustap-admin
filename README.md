@@ -26,31 +26,25 @@ No UI or UX changes are introduced by this document.
 
 Create local `.env` files from the provided examples and fill credentials as needed. Secrets are ignored by Git. Example: copy `.env.development.example` to `.env` (root) and `backend/.env.development.example` to `backend/.env` for local development.
 
-## Quick Start After Pull
+## Quick Start (Unified on port 8001)
 
-1. Clone the repo:
-   - `git clone https://github.com/lastra1/Haustap_Capstone.git`
-2. Web app (nested):
-   - `cd Haustap_Capstone/Haustap_Capstone-Haustap_Connecting/Haustap_Capstone-Haustap_Connecting`
-   - `php -S localhost:8002 router.php`
-   - Open `http://localhost:8002/`
-3. Admin panel:
-   - `php -S localhost:8003 -t admin_haustap/admin_haustap`
-   - Open `http://localhost:8003/dashboard.php`
-4. Root MVC app:
-   - `php -S localhost:8001 -t public`
-   - Open `http://localhost:8001/`
-5. Mobile app:
+1. Start the unified PHP dev server (UI, Admin, Mock API):
+   - From repo root (recommended): `./start-dev.ps1` (PowerShell)
+   - Or manually: `php -S localhost:8001 -t . public/index.php`
+   - Open UI: `http://localhost:8001/`
+   - Open Admin: `http://localhost:8001/admin/dashboard.php`
+   - Mock API: available under `http://localhost:8001/mock-api/*` (no separate server needed)
+2. Mobile app:
    - `cd android-capstone-main/HausTap`
    - `npm install`
    - `npm run start` (or `npx expo start`)
-6. Backend libraries (if needed by your setup):
+3. Backend libraries (optional):
    - `cd backend`
    - `composer install`
-   - Ensure any integration points in the PHP apps reference `backend/vendor/autoload.php` correctly.
-7. Mock API (optional):
-   - `php -S localhost:8009 -t mock-api`
-   - Configure endpoints via `mock-api/config.php`
+4. Tips:
+   - If `localhost` fails on some Windows setups, use `http://127.0.0.1:8001/`.
+   - Ensure the document root is the project root (`-t .`), not `public/`, so static assets like `/css/global.css` resolve correctly.
+   - The built-in router (`public/index.php`) maps clean routes (e.g. `/signup`, `/login`) and exposes the Mock API under `/mock-api/*` used by the web signup flow.
 
 ## Git Ignore & Line Endings
 
@@ -72,7 +66,9 @@ If authentication is required, use a Personal Access Token (PAT) with `repo` sco
 
 ## Troubleshooting
 
-- If pages don’t load, ensure you’re serving the correct directory and router, e.g. `router.php` for the nested web app.
+- If pages don’t load, start the unified server exactly as: `php -S localhost:8001 -t . public/index.php`.
+- If CSS or JS return 404, verify the document root is the repo root (`-t .`), not `-t public`.
+- If `localhost` refuses to connect, try `http://127.0.0.1:8001/`.
 - After pulling, run `composer install` (for PHP) and `npm install` (for JS) on each relevant project.
 - Review `docs/environment-setup.md` for machine-specific setup notes.
 

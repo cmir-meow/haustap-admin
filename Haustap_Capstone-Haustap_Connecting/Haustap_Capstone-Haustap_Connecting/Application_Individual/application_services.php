@@ -50,14 +50,21 @@
             
         </section>
         <div class="pagination">
-      <button>&lt;</button>
-      
-      
-      
-      
-      
-      <button>&gt;</button>
-    </div>
+          <button id="prevServicesBtn" type="button">&lt;</button>
+          <button id="nextServicesBtn" type="button">&gt;</button>
+        </div>
+        <script>
+          (function(){
+            var next = document.getElementById('nextServicesBtn');
+            var prev = document.getElementById('prevServicesBtn');
+            if (next) next.addEventListener('click', function(){
+              window.location.href = 'application_terms_condition.php';
+            });
+            if (prev) prev.addEventListener('click', function(){
+              window.location.href = 'application_form.php';
+            });
+          })();
+        </script>
     </main>
     <!-- FOOTER -->
   <?php include dirname(__DIR__) . "/client/includes/footer.php"; ?>

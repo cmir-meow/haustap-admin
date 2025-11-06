@@ -80,6 +80,8 @@ header {
 .agreement input {
   margin-right: 8px;
 }
+/* Make agreement checkbox black */
+.agreement input[type="checkbox"] { accent-color: #000; }
 
 /* Pagination */
 .pagination {

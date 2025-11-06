@@ -9,12 +9,22 @@
   <link rel="stylesheet" href="/booking_process/css/confirm_booking.css" />
   <link rel="stylesheet" href="/client/css/homepage.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>window.API_BASE_OVERRIDE = ((window.location && window.location.origin) || '') + '/mock-api';</script>
   <script src="/login_sign up/js/api.js"></script>
   <script src="/client/js/booking-api.js"></script>
 </head>
- <body>
+<body>
   <!-- HEADER -->
   <?php include dirname(__DIR__) . "/client/includes/header.php"; ?>
+  <script>
+    // Require login for confirm booking step: redirect guests to /login
+    (function(){
+      try {
+        var t = localStorage.getItem('haustap_token');
+        if (!t) { window.location.href = '/login'; return; }
+      } catch(e) { window.location.href = '/login'; return; }
+    })();
+  </script>
     <main class="confirm-container">
     <div class="confirm-box">
       <img src="/booking_process/images/logo.png" alt="HausTap Logo" class="logo" />
@@ -118,8 +128,15 @@
       HausTapBookingAPI.createBooking(payload)
         .then(function(resp){
           titleEl && (titleEl.textContent = 'Thank You For Booking!');
-          var bookingId = (resp && resp.data && resp.data.id) || (resp && resp.id) || null;
-          show(bookingId ? ('Booking ID: #' + bookingId) : 'Booking created successfully.');
+          var bookingId = null;
+          try {
+            bookingId = (resp && resp.data && (resp.data.id || (resp.data.booking && resp.data.booking.id)))
+              || (resp && (resp.id || resp.booking_id))
+              || null;
+          } catch(e) { bookingId = null; }
+          var msg = 'Booking created successfully.';
+          if (bookingId) { msg = 'Booking created successfully. Booking ID: #' + bookingId; }
+          show(msg);
           try {
             localStorage.removeItem('selected_date');
             localStorage.removeItem('selected_time');

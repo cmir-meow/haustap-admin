@@ -20,6 +20,15 @@
 <body>
   <!-- HEADER -->
   <?php include dirname(__DIR__) . "/client/includes/header.php"; ?>
+  <script>
+    // Require login for booking location step: redirect guests to /login
+    (function(){
+      try {
+        var t = localStorage.getItem('haustap_token');
+        if (!t) { window.location.href = '/login'; return; }
+      } catch(e) { window.location.href = '/login'; return; }
+    })();
+  </script>
 
  <main class="booking-location-page">
     <h1 class="page-title">Booking Location</h1>

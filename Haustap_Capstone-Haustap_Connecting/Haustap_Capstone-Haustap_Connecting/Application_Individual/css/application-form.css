@@ -7,6 +7,10 @@ body {
       display: flex;
       flex-direction: column;
     }
+    /* Make account-type checkboxes black */
+    .app-form .account-type input[type="checkbox"] {
+      accent-color: #000;
+    }
     .container {
       flex: 1;
       display: flex;

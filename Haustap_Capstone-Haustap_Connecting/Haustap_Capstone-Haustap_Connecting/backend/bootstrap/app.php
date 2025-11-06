@@ -11,7 +11,6 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-// Note: Global interface Throwable does not require import; avoid noisy warning
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,16 +18,18 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    // Temporarily disable Filament provider to isolate boot errors
+    ->withProviders([
+        \App\Providers\Filament\AdminPanelProvider::class,
+    ])
     ->withMiddleware(function (Middleware $middleware): void {
-        // Enable CORS for cross-origin requests from the UI server
-        $middleware->append(\App\Http\Middleware\Cors::class);
+        // Use Laravel built-in CORS handler
+        $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // Render all exceptions as consistent JSON for API-style requests
         $exceptions->render(function (\Throwable $e, Request $request) {
-            // Only intercept for JSON requests
             if (!($request->expectsJson() || str_contains($request->header('Accept', ''), 'application/json'))) {
-                return null; // use default HTML error rendering
+                return null;
             }
 
             $status = 500;
@@ -54,15 +55,12 @@ return Application::configure(basePath: dirname(__DIR__))
                 $status = $e->getStatusCode();
                 $payload['message'] = $e->getMessage() ?: 'HTTP error';
             } else {
-                // Generic exception
-                $payload['message'] = app()->hasDebugModeEnabled() ? ($e->getMessage() ?: 'Server error') : 'Server error';
+                $payload['message'] = (bool) config('app.debug') ? ($e->getMessage() ?: 'Server error') : 'Server error';
             }
 
-            // Attach minimal context for debugging (non-sensitive)
             $payload['path'] = $request->path();
             $payload['method'] = $request->method();
 
-            // Log with context
             Log::error('API exception', [
                 'status' => $status,
                 'message' => $e->getMessage(),

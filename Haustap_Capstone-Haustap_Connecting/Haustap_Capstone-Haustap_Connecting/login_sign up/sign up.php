@@ -97,6 +97,15 @@
       let pendingUser = null;
       let pendingToken = null;
 
+      // Navigate to Application Form when "Become a HausTap Partner" is clicked
+      const partnerBtn = document.querySelector('.partner-btn');
+      if (partnerBtn) {
+        partnerBtn.addEventListener('click', function() {
+          // Route to the web application form that includes Individual and Team
+          window.location.href = '/Application_Individual/application_form.php';
+        });
+      }
+
       form.addEventListener('submit', async function(e) {
         e.preventDefault();
 

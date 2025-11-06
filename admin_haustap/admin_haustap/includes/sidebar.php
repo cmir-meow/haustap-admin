@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/auth.php';
 $active = isset($active) ? $active : '';
 ?>
 <style>
@@ -29,6 +30,7 @@ $active = isset($active) ? $active : '';
       <li class="<?= $active === 'subscription' ? 'active' : '' ?>"><a href="subscription_management.php">Subscription Management</a></li>
       <li class="<?= $active === 'feedback' ? 'active' : '' ?>"><a href="feedback_reviews.php">Feedback & Reviews</a></li>
       <li class="<?= $active === 'settings' ? 'active' : '' ?>"><a href="system_settings.php">System Settings</a></li>
+      <li><a href="filament_redirect.php">Open Filament Admin</a></li>
     </ul>
   </nav>
 </aside>
@@ -44,3 +46,5 @@ $active = isset($active) ? $active : '';
 <script src="js/notify-admin.js" defer></script>
 <!-- UI binding that renders dropdown and handles unread count -->
 <script src="/client/js/notify-ui.js" defer></script>
+<!-- Make the topbar Log out link functional -->
+<script src="js/logout-admin.js" defer></script>

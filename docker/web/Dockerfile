@@ -7,7 +7,10 @@ RUN a2enmod rewrite headers
 COPY apache.conf /etc/apache2/sites-available/000-default.conf
 
 # Useful PHP extensions required by the app
-RUN docker-php-ext-install pdo_mysql mysqli
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libonig-dev \
+    && docker-php-ext-install mbstring pdo_mysql mysqli \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/public
 

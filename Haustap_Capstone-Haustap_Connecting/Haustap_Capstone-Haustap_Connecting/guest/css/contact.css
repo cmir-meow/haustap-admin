@@ -16,6 +16,82 @@
     position: relative;
 }
 
+/* CONTACT PAGE LAYOUT */
+.contact-section {
+  max-width: 1100px;
+  margin: 24px auto 64px;
+  padding: 0 24px;
+}
+
+.tab-container {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid #eee;
+}
+
+.tabs .tab {
+  flex: 1;
+  padding: 12px 18px;
+  background: #f8f8f8;
+  border: none;
+  border-right: 1px solid #eee;
+  cursor: pointer;
+  font-weight: 600;
+  color: #222;
+}
+.tabs .tab:last-child { border-right: none; }
+.tabs .tab:hover { background: #f1f1f1; }
+.tabs .tab.active {
+  background: #dff8fa;
+  color: #0aa6af;
+}
+
+.tab-content { display: none; padding: 20px; }
+.tab-content.active { display: block; }
+
+/* CHAT */
+.chat-box {
+  border: 1px dashed #d0d0d0;
+  border-radius: 8px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  background: #fafafa;
+}
+
+/* CONNECT HAUSTAP */
+.social-icons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.social-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fff;
+}
+.social-card img { width: 36px; height: 36px; object-fit: contain; }
+.social-card a { color: #0aa6af; text-decoration: none; font-weight: 600; }
+.social-card a:hover { text-decoration: underline; }
+
+.email-text { margin: 18px 0 8px; color: #444; }
+.contact-info h4 { margin: 8px 0; }
+.contact-info p { margin: 4px 0; }
+
 .logo-img {
     height: 100px;
     width: auto;

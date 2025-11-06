@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Request;
+use App\Http\Controllers\SSOController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -45,6 +46,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         ->whereNumber('id')
         ->withoutMiddleware([VerifyCsrfToken::class]);
 });
+
+// Admin SSO endpoint for bridging from PHP admin panel (GET or POST)
+Route::match(['get', 'post'], '/sso/admin', [SSOController::class, 'admin'])
+    ->withoutMiddleware([VerifyCsrfToken::class]);
+
 
 // Fallback route to return consistent JSON for missing endpoints
 Route::fallback(function (Request $request) {

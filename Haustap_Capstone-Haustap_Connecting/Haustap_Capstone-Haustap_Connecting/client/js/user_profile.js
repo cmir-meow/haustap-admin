@@ -9,7 +9,9 @@
     const first = (u.firstName || '').trim();
     const last = (u.lastName || '').trim();
     const combined = `${first} ${last}`.trim();
-    return combined || (u.name || '').trim();
+    const nameField = (u.name || '').trim();
+    const emailLocal = ((u.email || '').split('@')[0] || '').trim();
+    return combined || nameField || emailLocal;
   }
 
   function updateProfileName(name) {

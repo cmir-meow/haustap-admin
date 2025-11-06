@@ -78,6 +78,9 @@
   <script>
     // Booking flow: build label, persist, and route to booking_location with params
     document.addEventListener('DOMContentLoaded', function () {
+      function hasToken(){
+        try { return !!localStorage.getItem('haustap_token'); } catch(e){ return false; }
+      }
       const nextLink = document.querySelector('nav.pagination ul li:last-child a');
       const radios = document.querySelectorAll('input.cleaning-radio');
       const typeBtn = document.querySelector('.cleaning-type-btn');
@@ -114,7 +117,11 @@
           const id = getSelectedRadio()?.id || null;
           const type = normalizeCleaning(id);
           const house = getHouseSlug();
-          const href = (type && house) ? `/booking_process/booking_location.php?house=${encodeURIComponent(house)}&cleaning=${encodeURIComponent(type)}` : '#';
+          const href = (type && house)
+            ? (hasToken()
+              ? `/booking_process/booking_location.php?house=${encodeURIComponent(house)}&cleaning=${encodeURIComponent(type)}`
+              : '/login')
+            : '#';
           if (nextLink) nextLink.setAttribute('href', href);
           persistLabel();
         });
@@ -132,6 +139,10 @@
           }
           persistLabel();
           e.preventDefault();
+          if (!hasToken()) {
+            window.location.href = '/login';
+            return;
+          }
           window.location.href = `/booking_process/booking_location.php?house=${encodeURIComponent(house)}&cleaning=${encodeURIComponent(type)}`;
         });
       }

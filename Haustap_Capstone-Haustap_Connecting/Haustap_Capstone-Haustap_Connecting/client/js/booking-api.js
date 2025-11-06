@@ -38,32 +38,56 @@
   }
 
   async function createBooking(payload) {
-    return request('/bookings', { method: 'POST', body: JSON.stringify(payload) });
+    // Trailing slash ensures PHP dev server serves directory index
+    return request('/bookings/', { method: 'POST', body: JSON.stringify(payload) });
   }
 
   async function listBookings(query) {
     const qs = query ? `?${new URLSearchParams(query).toString()}` : '';
-    return request('/bookings' + qs, { method: 'GET' });
+    // Trailing slash ensures PHP dev server serves directory index
+    return request('/bookings/' + qs, { method: 'GET' });
+  }
+
+  // Fetch a single booking by ID (used to ensure fresh pending shows)
+  async function getBooking(id) {
+    if (!id) throw new Error('Missing booking id');
+    return request(`/bookings/${id}`, { method: 'GET' });
   }
 
   async function updateStatus(id, status) {
     return request(`/bookings/${id}/status`, { method: 'POST', body: JSON.stringify({ status }) });
   }
 
-  async function cancelBooking(id) {
-    return request(`/bookings/${id}/cancel`, { method: 'POST' });
+  async function cancelBooking(id, payload) {
+    const body = (payload && payload.reason) ? JSON.stringify({ reason: String(payload.reason) }) : undefined;
+    return request(`/bookings/${id}/cancel`, { method: 'POST', body });
   }
 
   async function rateBooking(id, rating) {
     return request(`/bookings/${id}/rate`, { method: 'POST', body: JSON.stringify({ rating }) });
   }
 
+  async function requestReturn(id, payload) {
+    const body = {
+      issues: Array.isArray(payload && payload.issues) ? payload.issues : [],
+      notes: (payload && payload.notes) ? String(payload.notes) : ''
+    };
+    return request(`/bookings/${id}/return`, { method: 'POST', body: JSON.stringify(body) });
+  }
+
+  async function listReturns() {
+    return request('/bookings/returns', { method: 'GET' });
+  }
+
   window.HausTapBookingAPI = {
     createBooking,
     listBookings,
+    getBooking,
+    listReturns,
     updateStatus,
     cancelBooking,
     rateBooking,
+    requestReturn,
     getToken,
     API_BASE,
   };

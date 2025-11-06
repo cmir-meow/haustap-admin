@@ -262,7 +262,7 @@
         "price": 0,
         "cancelled_at": "2025-11-05T01:26:18+00:00"
     },
-    {
+  {
         "id": 23,
         "provider_id": 3,
         "service_name": "Packages   Stress Relief Duo",
@@ -276,5 +276,20 @@
         "rated_at": null,
         "completed_at": null,
         "cancelled_at": "2025-11-05T01:26:15+00:00"
+    },
+    {
+        "id": 24,
+        "provider_id": 2,
+        "service_name": "Home Cleaning",
+        "scheduled_date": "2025-11-03",
+        "scheduled_time": "09:00",
+        "address": "Sample Address for Preview",
+        "status": "completed",
+        "notes": "Completed more than 24 hours ago for return preview",
+        "price": 2500,
+        "rating": null,
+        "rated_at": null,
+        "completed_at": "2025-11-04T00:00:00+00:00",
+        "cancelled_at": null
     }
 ]

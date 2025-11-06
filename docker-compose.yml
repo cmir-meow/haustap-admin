@@ -1,6 +1,6 @@
 services:
   web:
-    image: php:8.3-apache
+    build: ./docker/web
     container_name: haustap_web
     depends_on:
       - db

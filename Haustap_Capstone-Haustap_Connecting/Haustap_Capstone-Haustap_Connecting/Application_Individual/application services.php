@@ -55,6 +55,23 @@
                 
                 <button>&gt;</button>
             </div>
+            <script>
+              (function(){
+                var container = document.querySelector('.pagination');
+                if (!container) return;
+                var btns = container.querySelectorAll('button');
+                if (btns.length >= 2) {
+                  var prev = btns[0];
+                  var next = btns[btns.length - 1];
+                  prev.addEventListener('click', function(){
+                    window.location.href = 'application_form.php';
+                  });
+                  next.addEventListener('click', function(){
+                    window.location.href = 'application_terms_condition.php';
+                  });
+                }
+              })();
+            </script>
         </section>
     </main>
     <!-- FOOTER -->

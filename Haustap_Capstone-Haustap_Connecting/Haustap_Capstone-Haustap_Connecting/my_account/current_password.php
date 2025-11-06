@@ -40,12 +40,12 @@
     </ul>
   </div>
   <ul class="sidebar-secondary">
-    <li><i class="fa-solid fa-user-group"></i> Referral</li>
-    <li><i class="fa-solid fa-ticket"></i> My Vouchers</li>
-    <li><i class="fa-solid fa-link"></i> Connect Haustap</li>
-    <li><i class="fa-solid fa-file-contract"></i> Terms and Conditions</li>
-    <li><i class="fa-solid fa-star"></i> Rate HOMI</li>
-    <li><i class="fa-solid fa-circle-info"></i> About us</li>
+    <li><a href="/account/referral" class="account-link"><i class="fa-solid fa-user-group"></i> Referral</a></li>
+            <li><a href="/account/voucher" class="account-link"><i class="fa-solid fa-ticket"></i> My Vouchers</a></li>
+    <li><a href="/account/connect" class="account-link"><i class="fa-solid fa-link"></i> Connect Haustap</a></li>
+    <li><a href="/account/terms" class="account-link"><i class="fa-solid fa-file-contract"></i> Terms and Conditions</a></li>
+    <li><a href="/client/homepage.php#testimonials" class="account-link"><i class="fa-solid fa-star"></i> Rate HOMI</a></li>
+    <li><a href="/about" class="account-link"><i class="fa-solid fa-circle-info"></i> About us</a></li>
   </ul>
 
   <button class="logout-btn">Log out</button>

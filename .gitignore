@@ -53,3 +53,16 @@ tmp/
  
 # Local tooling
 tools/
+
+# Docker local overrides
+docker-compose.override.yml
+.docker/
+
+# PHP caches
+.phpunit.result.cache
+.php_cs.cache
+.php-cs-fixer.cache
+
+# Runtime caches
+cache/
+bootstrap/cache/

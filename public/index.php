@@ -16,6 +16,11 @@ $router = new Router();
 // Friendly routes using controllers
 $router->get('/', fn() => (new HomeController())->index());
 $router->get('/admin', fn() => (new DashboardController())->index());
+// Health check
+$router->get('/health', function() {
+    header('Content-Type: text/plain');
+    echo 'ok';
+});
 
 // Explicit admin legacy page routes to ensure dev-server compatibility
 $router->get('/admin_haustap/admin_haustap/dashboard.php', function() {
@@ -25,6 +30,30 @@ $router->get('/admin_haustap/admin_haustap/dashboard.php', function() {
 $router->get('/admin_haustap/admin_haustap/manage_applicant.php', function() {
     error_log('[router] explicit route hit: manage applicant');
     run_php(ADMIN_APP_PATH . '/manage_applicant.php');
+});
+
+// Alias: serve admin app under /admin/* for dev convenience
+$router->get('/admin/dashboard.php', function() {
+    error_log('[router] alias route hit: /admin/dashboard.php');
+    run_php(ADMIN_APP_PATH . '/dashboard.php');
+});
+$router->get('/admin/*', function() {
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $prefix = '/admin/';
+    $rel = substr($path, strlen($prefix));
+    if ($rel === false || $rel === '') { $rel = 'dashboard.php'; }
+    $candidate = ADMIN_APP_PATH . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $rel);
+    if (is_file($candidate)) {
+        $ext = strtolower(pathinfo($candidate, PATHINFO_EXTENSION));
+        if ($ext === 'php') { run_php($candidate); return; }
+        serve_static($candidate); return;
+    }
+    if (is_dir($candidate)) {
+        $index = $candidate . DIRECTORY_SEPARATOR . 'index.php';
+        if (is_file($index)) { run_php($index); return; }
+    }
+    http_response_code(404);
+    echo 'Not Found';
 });
 
 // Catch-all for legacy admin paths: /admin_haustap/admin_haustap/<anything>
@@ -48,6 +77,58 @@ $router->get('/api/admin/applicants', fn() => (new ApplicantsController())->inde
 $router->get('/api/admin/analytics/summary', fn() => (new AnalyticsController())->summary());
 // Trailing-slash tolerant route for analytics summary
 $router->get('/api/admin/analytics/summary/', fn() => (new AnalyticsController())->summary());
+
+// Mock API: route requests under /mock-api/* to project-root mock-api directory
+$router->get('/mock-api/*', function() {
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $prefix = '/mock-api/';
+    $rel = substr($path, strlen($prefix));
+    if ($rel === false) { $rel = ''; }
+    $mockRoot = BASE_PATH . DIRECTORY_SEPARATOR . 'mock-api';
+    $candidate = $mockRoot . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $rel);
+    // Special-case: forward any /mock-api/bookings/* request to bookings/index.php
+    // This ensures sub-routes like /mock-api/bookings/returns are handled by the index router.
+    if (strpos($path, '/mock-api/bookings/') === 0) {
+        $index = $mockRoot . DIRECTORY_SEPARATOR . 'bookings' . DIRECTORY_SEPARATOR . 'index.php';
+        if (is_file($index)) { run_php($index); return; }
+    }
+    if (is_file($candidate)) {
+        $ext = strtolower(pathinfo($candidate, PATHINFO_EXTENSION));
+        if ($ext === 'php') { run_php($candidate); return; }
+        serve_static($candidate); return;
+    }
+    if (is_dir($candidate)) {
+        $index = $candidate . DIRECTORY_SEPARATOR . 'index.php';
+        if (is_file($index)) { run_php($index); return; }
+    }
+    http_response_code(404);
+    echo 'Not Found';
+});
+
+$router->post('/mock-api/*', function() {
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $prefix = '/mock-api/';
+    $rel = substr($path, strlen($prefix));
+    if ($rel === false) { $rel = ''; }
+    $mockRoot = BASE_PATH . DIRECTORY_SEPARATOR . 'mock-api';
+    $candidate = $mockRoot . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $rel);
+    // Special-case: forward any /mock-api/bookings/* request to bookings/index.php
+    if (strpos($path, '/mock-api/bookings/') === 0) {
+        $index = $mockRoot . DIRECTORY_SEPARATOR . 'bookings' . DIRECTORY_SEPARATOR . 'index.php';
+        if (is_file($index)) { run_php($index); return; }
+    }
+    if (is_file($candidate)) {
+        $ext = strtolower(pathinfo($candidate, PATHINFO_EXTENSION));
+        if ($ext === 'php') { run_php($candidate); return; }
+        serve_static($candidate); return;
+    }
+    if (is_dir($candidate)) {
+        $index = $candidate . DIRECTORY_SEPARATOR . 'index.php';
+        if (is_file($index)) { run_php($index); return; }
+    }
+    http_response_code(404);
+    echo 'Not Found';
+});
 
 // Friendly routes mapping legacy PHP pages to clean paths
 // Auth
@@ -87,6 +168,13 @@ $router->get('/account/referral/success', fn() => run_php(SITE_APP_PATH . '/my_a
 $router->get('/account/connect', fn() => run_php(SITE_APP_PATH . '/my_account/connect_haustap.php'));
 $router->get('/account/password/current', fn() => run_php(SITE_APP_PATH . '/my_account/current_password.php'));
 $router->get('/account/password/saved', fn() => run_php(SITE_APP_PATH . '/my_account/password_saved.php'));
+
+// Explicit, separated login pages for client and admin
+$router->get('/client/login', fn() => run_php(SITE_APP_PATH . '/login_sign up/login.php'));
+$router->get('/admin/login', fn() => run_php(BASE_PATH . '/admin_haustap/admin_haustap/login.php'));
+
+// Friendly aliases
+$router->get('/login', fn() => run_php(SITE_APP_PATH . '/login_sign up/login.php'));
 
 // If MVC routes handled it, stop here
 if ($router->dispatch($_SERVER['REQUEST_URI'] ?? '/', $_SERVER['REQUEST_METHOD'] ?? 'GET')) {
@@ -180,6 +268,9 @@ if (preg_match('/\.(?:png|jpg|jpeg|gif|svg|css|js|ico|woff2?|ttf|map)$/i', $uri)
     if ($aliasStaticPath) { serve_static($aliasStaticPath); return true; }
 
     if (is_file($sitePath)) { serve_static($sitePath); return true; }
+    // Fallback: serve project-root assets like /css/global.css, /client/... not under SITE_APP_PATH
+    $rootPath = BASE_PATH . $normalized;
+    if (is_file($rootPath)) { serve_static($rootPath); return true; }
     if ($adminResolved && is_file($adminResolved)) { serve_static($adminResolved); return true; }
 }
 

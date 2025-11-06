@@ -7,6 +7,7 @@
 // - POST   /mock-api/bookings/{id}/status          (provider accept/complete)
 // - POST   /mock-api/bookings/{id}/cancel          (client cancel if pending)
 // - POST   /mock-api/bookings/{id}/rate            (client rate if completed)
+// - POST   /mock-api/bookings/{id}/return          (client request return if completed)
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -21,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $storeDir = __DIR__ . '/../_data';
 $storeFile = $storeDir . '/bookings.json';
+// Separate store for return requests
+$returnsStoreFile = $storeDir . '/returns.json';
 
 function load_store($file) {
   if (is_file($file)) {
@@ -86,6 +89,43 @@ $segments = path_segments_after_base('/mock-api/bookings');
 if ($method === 'GET' && count($segments) === 0) {
   $items = load_store($storeFile);
   echo json_encode(['success' => true, 'data' => $items]);
+  exit;
+}
+
+// GET /bookings/returns — list all return requests, enriched with minimal booking info
+if ($method === 'GET' && count($segments) === 1 && $segments[0] === 'returns') {
+  // Load returns
+  $returns = [];
+  if (is_file($returnsStoreFile)) {
+    $raw = file_get_contents($returnsStoreFile);
+    $data = json_decode($raw, true);
+    if (is_array($data)) { $returns = $data; }
+  }
+  // Enrich with booking summary
+  $items = load_store($storeFile);
+  $byId = [];
+  foreach ($items as $it) { $byId[(int)($it['id'] ?? 0)] = $it; }
+  $out = array_map(function($r) use ($byId) {
+    $bid = (int)($r['booking_id'] ?? 0);
+    $b = isset($byId[$bid]) ? $byId[$bid] : null;
+    $summary = null;
+    if ($b) {
+      $summary = [
+        'id' => (int)($b['id'] ?? $bid),
+        'service_name' => (string)($b['service_name'] ?? ''),
+        'scheduled_date' => $b['scheduled_date'] ?? null,
+        'scheduled_time' => $b['scheduled_time'] ?? null,
+        'address' => $b['address'] ?? null,
+        // Use numeric price from booking to display TOTAL on Return tab
+        'price' => isset($b['price']) ? (float)$b['price'] : null,
+        'provider_id' => isset($b['provider_id']) ? (int)$b['provider_id'] : null,
+        'status' => (string)($b['status'] ?? ''),
+      ];
+    }
+    $r['booking'] = $summary;
+    return $r;
+  }, $returns);
+  echo json_encode(['success' => true, 'data' => $out]);
   exit;
 }
 
@@ -242,6 +282,77 @@ if ($method === 'POST' && count($segments) === 2 && is_numeric($segments[0]) && 
   $items[$idx]['rated_at'] = date('c');
   save_store($storeFile, $items);
   echo json_encode(['success'=>true,'data'=>$items[$idx]]);
+  exit;
+}
+
+// POST /bookings/{id}/return (only if completed)
+if ($method === 'POST' && count($segments) === 2 && is_numeric($segments[0]) && $segments[1] === 'return') {
+  $payload = read_json();
+  $issues = isset($payload['issues']) && is_array($payload['issues']) ? array_values(array_filter($payload['issues'], 'strlen')) : [];
+  $notes = isset($payload['notes']) ? trim((string)$payload['notes']) : '';
+  if (count($issues) === 0) {
+    http_response_code(422);
+    echo json_encode(['success'=>false,'message'=>'At least one issue is required']);
+    exit;
+  }
+
+  $items = load_store($storeFile);
+  $id = (int)$segments[0];
+  $idx = find_booking_index($items, $id);
+  if ($idx < 0) { http_response_code(404); echo json_encode(['success'=>false,'message'=>'Not Found']); exit; }
+
+  $current = normalize_status($items[$idx]['status'] ?? 'pending');
+  if ($current !== 'completed') {
+    http_response_code(422);
+    echo json_encode(['success'=>false,'message'=>'Only completed bookings can request a return']);
+    exit;
+  }
+
+  // Determine fee based on completion time (free <= 24h, else 300)
+  $completedAt = isset($items[$idx]['completed_at']) ? strtotime($items[$idx]['completed_at']) : null;
+  $now = time();
+  $free = false;
+  if ($completedAt) {
+    $diff = $now - $completedAt;
+    $free = ($diff <= 24 * 60 * 60);
+  }
+  $fee = $free ? 0 : 300;
+
+  // Load existing return requests store
+  $returns = [];
+  if (is_file($returnsStoreFile)) {
+    $raw = file_get_contents($returnsStoreFile);
+    $data = json_decode($raw, true);
+    if (is_array($data)) { $returns = $data; }
+  }
+  $nextReturnId = 1;
+  if ($returns) {
+    $ids = array_map(function($x){ return (int)($x['id'] ?? 0); }, $returns);
+    $nextReturnId = max($ids) + 1;
+  }
+
+  $record = [
+    'id' => $nextReturnId,
+    'booking_id' => $id,
+    'issues' => $issues,
+    'notes' => $notes,
+    'status' => 'pending',
+    'created_at' => date('c'),
+    'fee' => $fee,
+    'approved_at' => null,
+    'declined_at' => null,
+  ];
+
+  $returns[] = $record;
+  $dir = dirname($returnsStoreFile);
+  if (!is_dir($dir)) { @mkdir($dir, 0777, true); }
+  file_put_contents($returnsStoreFile, json_encode($returns, JSON_PRETTY_PRINT));
+
+  // Optional: mark booking with last_return_id for UI convenience
+  $items[$idx]['last_return_id'] = $record['id'];
+  save_store($storeFile, $items);
+
+  echo json_encode(['success'=>true, 'data'=>$record]);
   exit;
 }
 

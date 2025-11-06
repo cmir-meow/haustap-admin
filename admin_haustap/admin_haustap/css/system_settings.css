@@ -340,3 +340,38 @@ input:checked + .slider:before {
 .verify-btn:hover {
   background: #009fa7;
 }
+
+/* Toast Notification (HausTap theme) */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  min-width: 280px;
+  max-width: 420px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  display: none;
+  z-index: 3000;
+}
+
+.toast.show { display: block; animation: toast-in 200ms ease-out; }
+.toast.success { background: #00c4cc; }
+.toast.error { background: #f44336; }
+.toast .close {
+  float: right;
+  margin-left: 12px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}

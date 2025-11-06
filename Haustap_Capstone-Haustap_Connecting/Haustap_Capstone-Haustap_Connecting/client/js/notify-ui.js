@@ -11,6 +11,15 @@
     return; // Header not present on this page
   }
 
+  // Ensure dropdown starts closed on every page load
+  try {
+    if (!dropdown.classList.contains('hidden')) {
+      dropdown.classList.add('hidden');
+    }
+    dropdown.style.display = 'none';
+    bellBtn.setAttribute('aria-expanded', 'false');
+  } catch (e) {}
+
   const STORAGE_KEY = 'haus:notifications';
   const MAX_ITEMS = 50;
   let items = [];
@@ -246,10 +255,13 @@
     persistNotificationServer(localItem);
   }
 
-  // Toggle dropdown
+  // Toggle dropdown (ensure display style also reflects hidden state)
   bellBtn.addEventListener('click', function (e) {
     e.preventDefault();
+    var willShow = dropdown.classList.contains('hidden');
     dropdown.classList.toggle('hidden');
+    try { dropdown.style.display = willShow ? 'block' : 'none'; } catch (err) {}
+    try { bellBtn.setAttribute('aria-expanded', willShow ? 'true' : 'false'); } catch (err) {}
   });
 
   // Click away to close
@@ -258,6 +270,17 @@
     const t = e.target;
     if (!dropdown.contains(t) && !bellBtn.contains(t)) {
       dropdown.classList.add('hidden');
+      try { dropdown.style.display = 'none'; } catch (err) {}
+      try { bellBtn.setAttribute('aria-expanded', 'false'); } catch (err) {}
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !dropdown.classList.contains('hidden')) {
+      dropdown.classList.add('hidden');
+      try { dropdown.style.display = 'none'; } catch (err) {}
+      try { bellBtn.setAttribute('aria-expanded', 'false'); } catch (err) {}
     }
   });
 

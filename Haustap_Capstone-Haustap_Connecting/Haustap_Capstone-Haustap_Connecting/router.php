@@ -29,6 +29,20 @@ $aliases = [
   '/services/beauty' => '/beauty_services/packages_services.php',
   '/services/wellness' => '/wellness_services/packages.php',
   '/services/tech' => '/tech_gadget/mobile_phone.php',
+  // Account pages
+  '/account' => '/my_account/my_account.php',
+  '/account/address' => '/my_account/account_address.php',
+  '/account/privacy' => '/my_account/privacy_settings.php',
+  '/account/change-password' => '/my_account/change_password.php',
+  '/account/current-password' => '/my_account/current_password.php',
+  '/account/password-saved' => '/my_account/password_saved.php',
+  '/account/verification-code' => '/my_account/verification_code.php',
+  '/account/voucher' => '/my_account/my_voucher.php',
+  '/account/referral' => '/my_account/account_referral.php',
+  '/account/referral-success' => '/my_account/referral_success.php',
+  '/account/connect' => '/my_account/connect_haustap.php',
+    '/account/terms' => '/client/terms.php',
+  '/about' => '/client/About.php',
 ];
 if (isset($aliases[$uri])) {
   $aliasPath = $docRoot . str_replace('/', DIRECTORY_SEPARATOR, $aliases[$uri]);

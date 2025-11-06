@@ -116,6 +116,43 @@
 
   <!-- FOOTER -->
   <?php include dirname(__DIR__) . "/client/includes/footer.php"; ?>
+  <script>
+    (function(){
+      // Attach Next click (last span in pagination) to send OTP and navigate
+      var nextSpan = (function(){
+        var p = document.querySelector('.pagination');
+        if (!p) return null;
+        var spans = p.querySelectorAll('span');
+        return spans.length ? spans[spans.length - 1] : null;
+      })();
+      var agree = document.getElementById('agree');
+      function getEmail(){
+        try { return String(localStorage.getItem('ht.app.email') || '').trim(); }
+        catch(e){ return ''; }
+      }
+      async function sendOtp(email){
+        var res = await fetch('/mock-api/auth/otp/send/index.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email })
+        });
+        if (!res.ok) throw new Error('Failed to send OTP');
+        var data = await res.json();
+        if (!data || !data.success || !data.otpId) throw new Error('Unexpected response');
+        try { localStorage.setItem('ht.app.otpId', String(data.otpId)); } catch(e) {}
+      }
+      if (nextSpan) {
+        nextSpan.style.cursor = 'pointer';
+        nextSpan.addEventListener('click', function(){
+          var email = getEmail();
+          if (!agree || !agree.checked) { alert('Please accept the Terms & Conditions to continue.'); return; }
+          if (!email) { alert('Please enter your email on the Application Form first.'); window.location.href = 'application_form.php'; return; }
+          sendOtp(email)
+            .then(function(){ window.location.href = 'Email_Verification.php'; })
+            .catch(function(){ alert('Unable to send OTP. Please try again.'); });
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
-

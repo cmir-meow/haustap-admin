@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="/client/css/homepage.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <script>window.API_BASE_OVERRIDE = ((window.location && window.location.origin) || '') + '/mock-api';</script>
   <script src="/login_sign up/js/api.js"></script>
   <script src="/client/js/booking-api.js"></script>
 </head>
@@ -17,6 +18,15 @@
 <body>
   <!-- HEADER -->
   <?php include dirname(__DIR__) . "/client/includes/header.php"; ?>
+  <script>
+    // Require login for booking overview: redirect guests to /login
+    (function(){
+      try {
+        var t = localStorage.getItem('haustap_token');
+        if (!t) { window.location.href = '/login'; return; }
+      } catch(e) { window.location.href = '/login'; return; }
+    })();
+  </script>
 
 <main class="booking-overview">
   <h1 class="page-title">Booking Overview</h1>
@@ -66,6 +76,20 @@
       </div>
       <div class="voucher-toggle">
         <button class="toggle-btn">></button>
+      </div>
+    </div>
+
+    <!-- Voucher form (collapsed by default) -->
+    <div class="voucher-form" style="display:none;margin-top:8px">
+      <label for="voucher-code" style="font-size:13px;color:#333">Voucher Code</label>
+      <div class="voucher-input-row" style="display:flex;gap:6px;margin-top:6px;align-items:center">
+        <input id="voucher-code" type="text" placeholder="Enter code (e.g., WELCOME-50)" style="flex:1;min-width:220px;padding:8px 10px;border:2px solid #c9c9c9;border-radius:6px;font-size:13px" />
+        <button class="apply-voucher-btn" style="background:#00c4cc;color:#fff;border:none;border-radius:6px;padding:8px 12px;font-size:13px;cursor:pointer">Apply</button>
+        <button class="remove-voucher-btn" style="background:#ddd;color:#333;border:none;border-radius:6px;padding:8px 12px;font-size:13px;cursor:pointer">Remove</button>
+      </div>
+      <div class="voucher-actions" style="margin-top:6px;display:flex;gap:8px;align-items:center">
+        <button class="best-voucher-btn" style="background:transparent;border:none;color:#009999;font-weight:600;cursor:pointer">Use Best Available Voucher</button>
+        <small class="voucher-error" style="color:#c62828;display:none"></small>
       </div>
     </div>
 
@@ -158,13 +182,21 @@
       // Update subtotal and total to reflect selected price
       var price = (function(){ try { var v = localStorage.getItem('selected_service_price'); return v ? Number(v) : 0; } catch(e){ return 0; } })();
       var summarySpans = Array.prototype.slice.call(document.querySelectorAll('.summary span'));
-      if (summarySpans.length >= 2) {
-        var subtotalEl = summarySpans[0];
-        var totalEl = summarySpans[summarySpans.length-1];
-        var formattedPrice = '₱' + price.toFixed(2);
-        if (subtotalEl) subtotalEl.textContent = formattedPrice;
-        if (totalEl) totalEl.textContent = formattedPrice;
+      var subtotalEl = summarySpans[0] || null;
+      var discountEl = (function(){
+        var rows = Array.prototype.slice.call(document.querySelectorAll('.summary .summary-row'));
+        var found = rows.find(function(r){ return (r.textContent||'').toLowerCase().indexOf('voucher discount') !== -1; });
+        return found ? found.querySelector('span') : null;
+      })();
+      var totalEl = summarySpans[summarySpans.length-1] || null;
+      function formatPHP(v){ return '₱' + Number(v||0).toFixed(2); }
+      function updateSummary(subtotal, discount){
+        var total = Math.max(0, Number(subtotal||0) - Number(discount||0));
+        if (subtotalEl) subtotalEl.textContent = formatPHP(subtotal);
+        if (discountEl) discountEl.textContent = formatPHP(discount);
+        if (totalEl) totalEl.textContent = formatPHP(total);
       }
+      updateSummary(price, 0);
 
       // Persist notes typing for use on confirm page
       var notesEl = document.getElementById('notes');
@@ -188,6 +220,134 @@
           if (next) next.addEventListener('click', function(){ window.location.href = '/booking/choose-sp'; });
         }
       }
+
+      // --- Voucher logic ---
+      var VOUCHER_KEY_CODE = 'selected_voucher_code';
+      var VOUCHER_KEY_AMOUNT = 'selected_voucher_amount';
+      var voucherSection = document.querySelector('.voucher-section');
+      var voucherForm = document.querySelector('.voucher-form');
+      var toggleBtn = document.querySelector('.voucher-toggle .toggle-btn');
+      var codeInput = document.getElementById('voucher-code');
+      var applyBtn = document.querySelector('.apply-voucher-btn');
+      var removeBtn = document.querySelector('.remove-voucher-btn');
+      var bestBtn = document.querySelector('.best-voucher-btn');
+      var errEl = document.querySelector('.voucher-error');
+
+      function showToast(msg, type){
+        try { if (window.htToast) { window.htToast[type||'info'](msg); return; } } catch(e) {}
+        try { if (window.HausTapToast && window.HausTapToast.show){ window.HausTapToast.show({ message: msg, type: type||'info' }); return; } } catch(e) {}
+        try { alert(msg); } catch(e) {}
+      }
+
+      function currentEmail(){
+        var u = null;
+        try { u = JSON.parse(localStorage.getItem('haustap_user')||'null'); } catch(e){}
+        if (!u) { try { u = JSON.parse(localStorage.getItem('htUser')||'null'); } catch(e){} }
+        var em = (u && u.email) ? String(u.email).trim().toLowerCase() : '';
+        return em || 'example@haustap.local';
+      }
+
+      async function fetchVouchers(){
+        var email = currentEmail();
+        var url = (window.API_BASE || ((window.location.origin||'')+'/mock-api')) + '/vouchers?email=' + encodeURIComponent(email);
+        var res = await fetch(url);
+        var json = await res.json();
+        if (!json.success) throw new Error(json.message||'Failed to fetch vouchers');
+        return json.data;
+      }
+
+      function normalizeCode(raw){
+        var c = String(raw||'').trim().toUpperCase();
+        if (!c) return null;
+        if (c.indexOf('WELCOME') !== -1) return { type:'welcome', code: c };
+        if (c.indexOf('LOYALTY') !== -1) return { type:'loyalty', code: c };
+        if (c.indexOf('REFERRAL') !== -1) return { type:'referral', code: c };
+        // Unknown: treat as invalid for safety
+        return null;
+      }
+
+      function computeAmountFor(type, vouchers){
+        if (!vouchers) return 0;
+        var priceNum = Number(price||0);
+        if (type === 'welcome') {
+          // First-time users only: no completed bookings
+          var eligible = !!(vouchers.welcome && vouchers.welcome.eligible);
+          var completed = Number((vouchers.loyalty && vouchers.loyalty.completed) || 0);
+          if (!eligible || completed > 0) return 0;
+          return Math.min(priceNum, Number(vouchers.welcome.reward_amount||0));
+        }
+        if (type === 'loyalty') {
+          var req = Number((vouchers.loyalty && vouchers.loyalty.required) || 10);
+          var done = Number((vouchers.loyalty && vouchers.loyalty.completed) || 0);
+          if (done < req) return 0;
+          return Math.min(priceNum, Number(vouchers.loyalty.reward_amount||0));
+        }
+        if (type === 'referral') {
+          var earned = Number((vouchers.referral && vouchers.referral.earned) || 0);
+          var reward = Number((vouchers.referral && vouchers.referral.reward_amount) || 0);
+          if (earned <= 0) return 0;
+          return Math.min(priceNum, reward);
+        }
+        return 0;
+      }
+
+      async function applyCode(raw){
+        if (errEl) { errEl.style.display='none'; errEl.textContent=''; }
+        var norm = normalizeCode(raw);
+        if (!norm) { if (errEl){ errEl.textContent='Invalid voucher code'; errEl.style.display='inline'; } showToast('Invalid voucher code', 'error'); return; }
+        var vouchers = null; try { vouchers = await fetchVouchers(); } catch(e){ showToast('Could not verify voucher', 'error'); return; }
+        var amount = computeAmountFor(norm.type, vouchers);
+        if (!amount || amount <= 0) { if (errEl){ errEl.textContent='Voucher not eligible'; errEl.style.display='inline'; } showToast('Voucher not eligible', 'warning'); return; }
+        try { localStorage.setItem(VOUCHER_KEY_CODE, norm.code); localStorage.setItem(VOUCHER_KEY_AMOUNT, String(amount)); } catch(e){}
+        updateSummary(price, amount);
+        showToast('Voucher applied: ' + norm.code + ' (-' + formatPHP(amount) + ')', 'success');
+      }
+
+      async function applyBest(){
+        if (errEl) { errEl.style.display='none'; errEl.textContent=''; }
+        var vouchers = null; try { vouchers = await fetchVouchers(); } catch(e){ showToast('Could not load vouchers', 'error'); return; }
+        var candidates = [
+          { type:'welcome', amount: computeAmountFor('welcome', vouchers), code:'WELCOME-50' },
+          { type:'loyalty', amount: computeAmountFor('loyalty', vouchers), code:'LOYALTY-50' },
+          { type:'referral', amount: computeAmountFor('referral', vouchers), code:'REFERRAL-10' }
+        ];
+        candidates.sort(function(a,b){ return Number(b.amount||0) - Number(a.amount||0); });
+        var best = candidates[0];
+        if (!best || !best.amount) { showToast('No eligible voucher available', 'info'); return; }
+        try { localStorage.setItem(VOUCHER_KEY_CODE, best.code); localStorage.setItem(VOUCHER_KEY_AMOUNT, String(best.amount)); } catch(e){}
+        if (codeInput) codeInput.value = best.code;
+        updateSummary(price, best.amount);
+        showToast('Best voucher applied: ' + best.code + ' (-' + formatPHP(best.amount) + ')', 'success');
+      }
+
+      function removeVoucher(){
+        try { localStorage.removeItem(VOUCHER_KEY_CODE); localStorage.removeItem(VOUCHER_KEY_AMOUNT); } catch(e){}
+        if (codeInput) codeInput.value = '';
+        updateSummary(price, 0);
+        showToast('Voucher removed', 'info');
+      }
+
+      // Toggle form visibility
+      if (toggleBtn && voucherForm) {
+        toggleBtn.addEventListener('click', function(){
+          var show = voucherForm.style.display === 'none';
+          voucherForm.style.display = show ? 'block' : 'none';
+          toggleBtn.textContent = show ? 'v' : '>';
+        });
+      }
+      if (applyBtn && codeInput) { applyBtn.addEventListener('click', function(){ applyCode(codeInput.value); }); }
+      if (bestBtn) { bestBtn.addEventListener('click', applyBest); }
+      if (removeBtn) { removeVoucher(); removeBtn.addEventListener('click', removeVoucher); }
+
+      // Restore previously selected voucher
+      try {
+        var savedCode = localStorage.getItem(VOUCHER_KEY_CODE);
+        var savedAmt = Number(localStorage.getItem(VOUCHER_KEY_AMOUNT)||'0');
+        if (savedCode && savedAmt>0) {
+          if (codeInput) codeInput.value = savedCode;
+          updateSummary(price, savedAmt);
+        }
+      } catch(e){}
     })();
   </script>
 </body>

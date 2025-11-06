@@ -114,6 +114,9 @@
   <script>
     // Booking flow for cleaning packages page: persist label and route with params
     document.addEventListener('DOMContentLoaded', function () {
+      function hasToken(){
+        try { return !!localStorage.getItem('haustap_token'); } catch(e){ return false; }
+      }
       const houseSelect = document.querySelector('.type-selector select');
       const packageRadios = document.querySelectorAll('input.package-radio');
       const pagination = document.querySelector('.pagination');
@@ -177,9 +180,13 @@
           const type = getCleaningType();
           const house = getHouseSlug();
           if (type) {
-            let url = `/booking_process/booking_location.php?house=${encodeURIComponent(house)}&cleaning=${encodeURIComponent(type)}`;
-            if (pVal != null && !isNaN(pVal)) { url += `&price=${encodeURIComponent(String(pVal))}`; }
-            window.location.href = url;
+            // Guests stay on this page after selecting; proceed via Next
+            // Logged-in users proceed immediately
+            if (hasToken()) {
+              let url = `/booking_process/booking_location.php?house=${encodeURIComponent(house)}&cleaning=${encodeURIComponent(type)}`;
+              if (pVal != null && !isNaN(pVal)) { url += `&price=${encodeURIComponent(String(pVal))}`; }
+              window.location.href = url;
+            }
           }
         });
       });
@@ -209,6 +216,10 @@
           persistPrice();
           let url = `/booking_process/booking_location.php?house=${encodeURIComponent(house)}&cleaning=${encodeURIComponent(type)}`;
           if (pVal != null && !isNaN(pVal)) { url += `&price=${encodeURIComponent(String(pVal))}`; }
+          if (!hasToken()) {
+            window.location.href = '/login';
+            return;
+          }
           window.location.href = url;
         });
       }

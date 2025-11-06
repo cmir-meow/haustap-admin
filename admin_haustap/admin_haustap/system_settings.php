@@ -1,3 +1,24 @@
+<?php
+  // Load saved settings (file-based dev storage)
+  // Prefer absolute base path to avoid issues under different routers
+  if (defined('BASE_PATH')) {
+    $settingsPath = BASE_PATH . DIRECTORY_SEPARATOR . 'admin_haustap' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'system-settings.json';
+  } else {
+    $settingsPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'system-settings.json';
+  }
+
+  $defaults = [
+    'system_name' => 'Ana Santos',
+    'contact_email' => 'haustap@gmail.com'
+  ];
+  $settings = $defaults;
+  if (is_file($settingsPath)) {
+    $loaded = json_decode(@file_get_contents($settingsPath), true);
+    if (is_array($loaded)) {
+      $settings = array_merge($defaults, $loaded);
+    }
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,7 +60,7 @@
           <h4>General Settings</h4>
           <div class="form-group">
             <label>System Name:</label>
-            <input type="text" value="Ana Santos">
+            <input type="text" id="systemName" name="system_name" value="<?= htmlspecialchars($settings['system_name'] ?? '') ?>">
           </div>
 
           <div class="form-group">
@@ -49,7 +70,7 @@
 
           <div class="form-group">
             <label>Contact Email:</label>
-            <input type="email" value="haustap@gmail.com">
+            <input type="email" id="contactEmail" name="contact_email" value="<?= htmlspecialchars($settings['contact_email'] ?? '') ?>">
           </div>
 
           <div class="form-group">
@@ -145,6 +166,9 @@
     </div>
   </div>
 
+  <!-- Themed Toast Notification -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
   <script>
     // User dropdown menu
     const dropdownBtn = document.getElementById("userDropdownBtn");
@@ -178,14 +202,71 @@
       popup.style.display = "none";
     });
 
-    // Verify password (dummy logic)
+    // Toast helper (HausTap themed)
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = 'toast ' + type + ' show';
+      // Auto hide after 2.5s
+      setTimeout(() => {
+        toast.className = 'toast';
+        toast.textContent = '';
+      }, 2500);
+    }
+
+    // Save settings to backend
+    async function saveSettings() {
+      const nameEl = document.getElementById('systemName');
+      const emailEl = document.getElementById('contactEmail');
+      const name = (nameEl && nameEl.value || '').trim();
+      const email = (emailEl && emailEl.value || '').trim();
+
+      if (!name) { showToast('System name is required.', 'error'); return; }
+      if (!email) { showToast('Contact email is required.', 'error'); return; }
+
+      const fd = new FormData();
+      fd.append('system_name', name);
+      fd.append('contact_email', email);
+
+      const candidates = [
+        'api/save_settings.php',
+        '/admin/api/save_settings.php',
+        '/admin_haustap/admin_haustap/api/save_settings.php'
+      ];
+
+      let lastError = 'Save failed';
+      for (const url of candidates) {
+        try {
+          const resp = await fetch(url, {
+            method: 'POST',
+            body: fd,
+            credentials: 'same-origin'
+          });
+          const data = await resp.json().catch(() => ({}));
+          if (resp.ok && data && data.ok) {
+            showToast('Settings saved', 'success');
+            // Refresh to rehydrate inputs from persisted JSON
+            setTimeout(() => { try { location.reload(); } catch (_) {} }, 600);
+            return;
+          } else {
+            lastError = (data && data.error) || ('Save failed: ' + resp.status);
+          }
+        } catch (err) {
+          lastError = 'Save error: ' + err.message;
+        }
+      }
+      showToast(lastError, 'error');
+    }
+
+    // Verify password (development logic) then save
     verifyPopup.addEventListener("click", () => {
       const password = document.getElementById("adminPassword").value;
-      if (password === "admin123") {
-        alert("Access Verified!");
+      const allowedPassword = "Admin123!"; // dev credential used in login.php
+      if (password.trim() === allowedPassword) {
         popup.style.display = "none";
+        saveSettings();
       } else {
-        alert("Incorrect password!");
+        showToast("Incorrect password!", "error");
       }
     });
   </script>

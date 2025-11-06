@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="/client/css/homepage.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <script>window.API_BASE_OVERRIDE = ((window.location && window.location.origin) || '') + '/mock-api';</script>
   <script src="/login_sign up/js/api.js"></script>
   <script src="/client/js/booking-api.js"></script>
 </head>

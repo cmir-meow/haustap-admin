@@ -65,6 +65,8 @@ document.addEventListener('DOMContentLoaded', function () {
   } catch (e) {}
 });
 </script>
+<!-- Logout handler shared across guest/client pages -->
+<script src="/client/js/logout.js" defer></script>
 <script>
 // Client-side repair for common mojibake sequences caused by prior mis-encoding
 document.addEventListener('DOMContentLoaded', function () {

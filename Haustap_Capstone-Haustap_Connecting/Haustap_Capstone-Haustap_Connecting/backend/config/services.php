@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    // Admin panel SSO secret for bridging from external PHP admin UI
+    'admin_sso' => [
+        'secret' => env('ADMIN_SSO_SECRET', 'dev-sso-secret'),
+    ],
+
 ];

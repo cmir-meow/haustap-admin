@@ -23,24 +23,12 @@ div {
 .logo-img {
   height: 100px !important;
   width: auto !important;
-}
-
-/* Consistent logo sizing across shared headers */
-.header .logo-link {
-  display: inline-flex !important;
-  align-items: center !important;
-  width: 180px !important;
-  height: 80px !important;
-}
-
-.header .logo-img,
-.header .logo-link img,
-.header .logo img {
-  width: 100% !important;
-  height: 100% !important;
   object-fit: contain !important;
-  display: block !important;
 }
+
+/* Remove forced container sizing so the logo renders uniformly like other pages */
+/* (The logo image itself controls its size via .logo-img above) */
+/* .header .logo-link specific sizing removed to avoid inconsistencies */
 
 .nav {
   display: flex !important;
@@ -100,6 +88,21 @@ div {
   width: 28px !important;
   cursor: pointer !important;
 }
+
+/* Utility: hide elements when toggling dropdowns/modals */
+.hidden { display: none !important; }
+
+/* Auth links (Sign up | Login) layout for guests */
+.auth-links {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  white-space: nowrap !important;
+  font-size: 16px !important;
+}
+.auth-links a { color: #222 !important; text-decoration: none !important; font-weight: 500 !important; }
+.auth-links a:hover { color: #3dbfc3 !important; }
+.auth-links span { color: #888 !important; }
 /* --- Skeleton Loading Styles (HausTap) --- */
 @keyframes ht-shimmer {
   0% { background-position: -200% 0; }

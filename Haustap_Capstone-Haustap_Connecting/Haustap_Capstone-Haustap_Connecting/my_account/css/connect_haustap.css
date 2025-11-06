@@ -139,3 +139,10 @@
   color: rgb(0, 0, 0);
   transform: scale3d(1.05, 1.05, 1);
 }
+/* Sidebar compact overrides */
+.sidebar-nav-group li { margin-bottom: 6px; }
+.sidebar-secondary li { margin: 6px 0; font-size: 14px; cursor: pointer; color: #333; display: flex; align-items: center; min-height: 32px; }
+.sidebar-secondary i { margin-right: 8px; width: 18px; text-align: center; font-size: 16px; }
+.sidebar-nav-group ul li a, .sidebar-secondary li a { display: flex; align-items: center; gap: 6px; padding: 6px 8px; font-size: 14px; line-height: 1.25; min-height: 32px; border-radius: 6px; text-decoration: none; color: #555; }
+.sidebar-nav-group ul li a:hover, .sidebar-secondary li a:hover { background-color: #f0f7f7; color: #009999; }
+.sidebar-nav-group ul li a.active, .sidebar-secondary li a.active { font-weight: bold; color: #3dbfc3; }
