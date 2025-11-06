@@ -52,9 +52,20 @@ if ($context === 'client') {
       <?php endif; ?>
     </div>
     <?php if ($context === 'client'): ?>
-      <a href="#" class="icon-link" aria-label="Notifications">
-<i class="fa-solid fa-bell"></i>
+      <a href="#" class="icon-link" id="notifBellBtn" aria-label="Notifications" style="position:relative;">
+        <i class="fa-solid fa-bell"></i>
+        <span class="notif-count" id="notifCount" aria-hidden="true" style="position:absolute; top:-6px; right:-6px; background:#ff3b30; color:#fff; border-radius:12px; padding:0 6px; font-size:12px; line-height:18px; min-width:18px; text-align:center; display:none;">0</span>
       </a>
+      <div class="notif-dropdown hidden" id="notifDropdown" aria-label="Notifications" style="position:absolute; right:60px; top:90px; width:320px; background:#fff; border:1px solid #e5e7eb; box-shadow:0 8px 24px rgba(0,0,0,0.12); border-radius:10px; overflow:hidden; z-index:999;">
+        <div class="notif-header" style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:#f7f9fa; border-bottom:1px solid #e5e7eb;">
+          <strong>Notifications</strong>
+          <button type="button" class="mark-all" id="notifMarkAll" style="background:transparent; border:none; color:#3dbfc3; cursor:pointer;">Mark all read</button>
+        </div>
+        <ul class="notif-list" id="notifList" style="list-style:none; margin:0; padding:0; max-height:360px; overflow:auto;"></ul>
+        <div class="notif-footer" style="padding:8px 12px; border-top:1px solid #e5e7eb; text-align:right;">
+          <a href="/bookings/booking.php" style="color:#3dbfc3; text-decoration:none; font-weight:500;">View bookings</a>
+        </div>
+      </div>
       <a href="/my_account/my_account.php" class="account-link">
 <i class="fa-solid fa-user account-icon"></i>
         <span class="account-name" style="margin-left: 6px;">My Account</span>

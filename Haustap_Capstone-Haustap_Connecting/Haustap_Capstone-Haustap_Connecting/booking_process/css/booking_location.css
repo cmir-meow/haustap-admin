@@ -196,14 +196,108 @@ body {
   border-radius: 10px;
   height: 350px;
   box-shadow: 2px 4px 8px rgba(0,0,0,0.1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  /* Ensure Leaflet takes full box space */
+  display: block;
+  position: relative;
+  border: 1px solid #ddd; /* helps visually confirm container */
 }
 
-.map-placeholder-text {
-  color: #888;
-  font-size: 1rem;
+/* Make sure Leaflet fills the container */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+
+/* Person marker (DivIcon) */
+.person-marker {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #2e7dff; /* primary marker color */
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  border: 2px solid #fff;
+  position: relative;
+}
+.person-marker::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid #2e7dff; /* tail same color as marker */
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+}
+.person-marker i {
+  line-height: 1;
+}
+
+/* Human marker (inline SVG silhouette, professional style) */
+.human-marker {
+  --marker-color: #2563eb; /* primary brand blue */
+  --ring-color: #ffffff;   /* outer ring color */
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--marker-color);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.24);
+  border: 2px solid var(--ring-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.human-marker::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -12px;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 14px solid var(--marker-color);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.22));
+}
+.human-marker svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+  fill: #fff;
+}
+
+/* Human figure marker (SVG only, no circle background) */
+.human-figure-marker {
+  --marker-color: #2563eb;
+  width: 44px;
+  height: 64px; /* includes tail area */
+  display: block;
+  position: relative;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
+}
+.human-figure-marker svg {
+  width: 44px;
+  height: 64px;
+  display: block;
+}
+.human-figure-marker .figure {
+  fill: var(--marker-color);
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+.human-figure-marker .tail {
+  fill: var(--marker-color);
+  stroke: #ffffff;
+  stroke-width: 2;
 }
 
 /* Address Boxes */
@@ -381,3 +475,22 @@ footer {
     height: 200px;
   }
 }
+.human-pin-pro {
+  width: 64px;
+  height: 90px; /* includes tail and base */
+  display: block;
+  position: relative;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.25));
+}
+.human-pin-pro svg {
+  width: 64px;
+  height: 90px;
+  display: block;
+}
+.human-pin-pro .grad-stop-1 { stop-color: #19b0ff; }
+.human-pin-pro .grad-stop-2 { stop-color: #0a5edc; }
+.human-pin-pro .ring { stroke: #19b0ff; }
+.human-pin-pro .pin-outline { stroke: #0a5edc; }
+.human-pin-pro .figure { fill: #ffffff; }
+.human-pin-pro .arcs { stroke: #19b0ff; opacity: 0.7; }
+.human-pin-pro .base { stroke: #19b0ff; }

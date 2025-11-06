@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -6,7 +6,7 @@
   <title>Packages</title>
   <link rel="stylesheet" href="/css/global.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/packages.css" />
+  <link rel="stylesheet" href="/wellness_services/css/packages.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 <link rel="stylesheet" href="/client/css/homepage.css"></head>
@@ -65,6 +65,11 @@
       var radios = Array.prototype.slice.call(document.querySelectorAll('.service-card input[type="radio"]'));
       var activeSubcat = document.querySelector('.subcategory-nav li.active');
       function normalizeLabel(txt){ return String(txt||'').replace(/\s+/g,' ').trim(); }
+      function parsePriceText(txt){
+        var cleaned = String(txt||'').replace(/,/g,'');
+        var m = cleaned.match(/(\d+(?:\.\d+)?)/);
+        return m ? Number(m[1]) : null;
+      }
       function buildLabel(card){
         var titleEl = card ? card.querySelector('.service-content h3') : null;
         var subcat = activeSubcat ? normalizeLabel(activeSubcat.textContent) : 'Wellness Services';
@@ -73,8 +78,17 @@
       }
       function proceed(card){
         var label = buildLabel(card);
-        try { localStorage.setItem('selected_service_name', label); } catch(e){}
-        window.location.href = '/booking_process/booking_location.php?service=' + encodeURIComponent(label);
+        var priceEl = card ? card.querySelector('.price') : null;
+        var price = priceEl ? parsePriceText(priceEl.textContent) : null;
+        try {
+          localStorage.setItem('selected_service_name', label);
+          if (price != null && !isNaN(price)) {
+            localStorage.setItem('selected_service_price', String(price));
+          }
+        } catch(e){}
+        var url = '/booking_process/booking_location.php?service=' + encodeURIComponent(label);
+        if (price != null && !isNaN(price)) { url += '&price=' + encodeURIComponent(String(price)); }
+        window.location.href = url;
       }
       radios.forEach(function(r){
         r.addEventListener('change', function(){ proceed(r.closest('.service-card')); });

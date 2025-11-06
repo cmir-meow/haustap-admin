@@ -24,44 +24,7 @@
 
     <section class="schedule-box">
       <h2 class="section-title">DATE</h2>
-
-      <div class="date-grid">
-        <!-- Example static list for UI only -->
-        <label class="date-box" data-date="2025-10-06">
-          <input type="radio" name="date" />
-          <div class="date-text"><strong>Oct 6, 2025</strong><br>Monday</div>
-        </label>
-
-        <label class="date-box today" data-date="2025-10-07">
-          <input type="radio" name="date" />
-          <div class="date-text"><strong>Oct 7, 2025</strong><br>Tuesday - Today</div>
-        </label>
-
-        <label class="date-box" data-date="2025-10-08">
-          <input type="radio" name="date" />
-          <div class="date-text"><strong>Oct 8, 2025</strong><br>Wednesday</div>
-        </label>
-
-        <label class="date-box" data-date="2025-10-09">
-          <input type="radio" name="date" />
-          <div class="date-text"><strong>Oct 9, 2025</strong><br>Thursday</div>
-        </label>
-
-        <label class="date-box" data-date="2025-10-10">
-          <input type="radio" name="date" />
-          <div class="date-text"><strong>Oct 10, 2025</strong><br>Friday</div>
-        </label>
-
-        <label class="date-box" data-date="2025-10-11">
-          <input type="radio" name="date" />
-          <div class="date-text"><strong>Oct 11, 2025</strong><br>Saturday</div>
-        </label>
-
-        <label class="date-box" data-date="2025-10-12">
-          <input type="radio" name="date" />
-          <div class="date-text"><strong>Oct 12, 2025</strong><br>Sunday</div>
-        </label>
-      </div>
+      <div class="date-grid"><!-- Dates are generated dynamically via JS --></div>
 
       <h2 class="section-title">TIME</h2>
       <select class="time-select">
@@ -80,11 +43,11 @@
 
     <div class="pagination">
       <button class="back-btn">&lt;</button>
-      <button class="active">1</button>
-      <button class="active">2</button>
-      <button class="active">3</button>
-      <button class="active">4</button>
-      <button>5</button>
+      
+      
+      
+      
+      
       <button class="next-btn">&gt;</button>
     </div>
   </main>
@@ -94,6 +57,56 @@
     (function(){
       var selectedDate = null;
       var selectedTime = null;
+      // Dynamically generate date boxes for the next 14 days
+      var dateGrid = document.querySelector('.date-grid');
+      var DAYS_TO_SHOW = 7; // Show next 7 days
+      var today = new Date();
+      var savedDate = null;
+      try { savedDate = localStorage.getItem('selected_date') || null; } catch(e){}
+
+      // Helpers to format dates in Philippines timezone (Asia/Manila)
+      var TZ = 'Asia/Manila';
+      function pad2(n){ return String(n).padStart(2,'0'); }
+      function fmtParts(ts){
+        var parts = new Intl.DateTimeFormat('en-US', {
+          timeZone: TZ,
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          weekday: 'long'
+        }).formatToParts(new Date(ts));
+        var out = {};
+        parts.forEach(function(p){ out[p.type] = p.value; });
+        return out; // {year, month, day, weekday}
+      }
+      function monthShort(ts){
+        return new Intl.DateTimeFormat('en-US', { timeZone: TZ, month: 'short' }).format(new Date(ts));
+      }
+
+      for (var i = 0; i < DAYS_TO_SHOW; i++) {
+        var ts = today.getTime() + i * 86400000; // add i days in ms
+        var p = fmtParts(ts);
+        var iso = p.year + '-' + p.month + '-' + p.day; // YYYY-MM-DD in Manila
+        var label = document.createElement('label');
+        label.className = 'date-box' + (i === 0 ? ' today' : '');
+        label.setAttribute('data-date', iso);
+        var input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'date';
+        var div = document.createElement('div');
+        div.className = 'date-text';
+        var dateLine = '<strong>' + monthShort(ts) + ' ' + pad2(Number(p.day)) + ', ' + p.year + '</strong>';
+        var dayLine = (i === 0) ? (p.weekday + ' - Today') : p.weekday;
+        div.innerHTML = dateLine + '<br>' + dayLine;
+        label.appendChild(input);
+        label.appendChild(div);
+        dateGrid && dateGrid.appendChild(label);
+        if (savedDate && savedDate === iso) {
+          input.checked = true;
+          selectedDate = iso;
+          label.style.outline = '2px solid #009999';
+        }
+      }
       // Read stored service label and display without overwriting
       var subcat = document.querySelector('.subcategory-btn');
       var storedServiceName = '';
@@ -125,7 +138,18 @@
 
       var timeSelect = document.querySelector('.time-select');
       if (timeSelect) {
-        selectedTime = timeSelect.value && timeSelect.value !== 'Select Time' ? timeSelect.value : null;
+        // Restore previously saved time if available
+        try {
+          var savedTime = localStorage.getItem('selected_time');
+          if (savedTime) {
+            timeSelect.value = savedTime;
+            selectedTime = savedTime;
+          } else {
+            selectedTime = timeSelect.value && timeSelect.value !== 'Select Time' ? timeSelect.value : null;
+          }
+        } catch(e) {
+          selectedTime = timeSelect.value && timeSelect.value !== 'Select Time' ? timeSelect.value : null;
+        }
         timeSelect.addEventListener('change', function(){
           selectedTime = timeSelect.value && timeSelect.value !== 'Select Time' ? timeSelect.value : null;
         });
@@ -145,9 +169,10 @@
           if (selectedDate) localStorage.setItem('selected_date', selectedDate);
           if (selectedTime) localStorage.setItem('selected_time', selectedTime);
         } catch {}
-        window.location.href = '/booking/confirm';
+        window.location.href = '/booking/overview';
       });
     })();
   </script>
 </body>
 </html>
+

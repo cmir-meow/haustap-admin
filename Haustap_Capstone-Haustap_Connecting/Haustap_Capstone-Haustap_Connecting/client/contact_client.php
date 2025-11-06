@@ -96,6 +96,33 @@
   </section>
 
   <?php include __DIR__ . '/includes/footer.php'; ?>
+  <!-- Chat scripts -->
+  <script src="/login_sign up/js/api.js"></script>
+  <!-- Socket.IO CDN -->
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <!-- Optional: keep HTTP helper available, but sockets take precedence -->
+  <script src="/client/js/chat-api.js"></script>
+  <!-- Real-time chat over sockets -->
+  <script>
+    // Configure Socket server URL if different
+    window.SOCKET_URL = window.SOCKET_URL || 'http://localhost:3000';
+    window.CHAT_ROLE = window.CHAT_ROLE || 'client';
+    // If no booking_id in URL, inject the last booking_id from localStorage
+    (function(){
+      try {
+        var p = new URLSearchParams(window.location.search);
+        if (!p.get('booking_id')) {
+          var last = localStorage.getItem('last_booking_id');
+          if (last) {
+            p.set('booking_id', String(last));
+            var url = window.location.pathname + '?' + p.toString();
+            window.history.replaceState(null, document.title, url);
+          }
+        }
+      } catch(e) {}
+    })();
+  </script>
+  <script src="/client/js/socket-chat.js"></script>
 </body>
 </html>
 

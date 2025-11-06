@@ -3,3 +3,4 @@
 $context = 'guest';
 require dirname(__DIR__, 2) . '/includes/header.shared.php';
 ?>
+<script src="/js/lazy-images.js" defer></script>

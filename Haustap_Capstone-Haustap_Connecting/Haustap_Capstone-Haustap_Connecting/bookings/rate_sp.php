@@ -44,14 +44,14 @@
       <p>Provider: Ana Santos | Date: May 21, 2025</p>
     </div>
 
-    <div class="rating-overall">
-      <span class="label">Overall Rating</span>
-      <div class="stars">
-        <span class="star">â˜…</span>
-        <span class="star">â˜…</span>
-        <span class="star">â˜…</span>
-        <span class="star">â˜…</span>
-        <span class="star">â˜…</span>
+      <div class="rating-overall">
+        <span class="label">Overall Rating</span>
+        <div class="stars">
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
         <span class="rating-text">Amazing</span>
       </div>
     </div>
@@ -62,8 +62,8 @@
 
       <div class="experience-actions">
         <div class="left-buttons">
-          <button class="btn-photo">ðŸ“· Add Photo</button>
-          <button class="btn-video">ðŸŽ¥ Add Video</button>
+          <button class="btn-photo">&#128247; Add Photo</button>
+          <button class="btn-video">&#127909; Add Video</button>
         </div>
         <small class="right-note">Add 100 characters with 1 photo and 1 video</small>
       </div>
@@ -80,16 +80,16 @@
     <div class="aspect-section">
       <span class="section-title">Rate Specific Aspects</span>
       <ul>
-        <li>Professionalism <span class="star-group">â˜…â˜…â˜…â˜…â˜…</span></li>
-        <li>Punctuality <span class="star-group">â˜…â˜…â˜…â˜…â˜…</span></li>
-        <li>Quality of Work <span class="star-group">â˜…â˜…â˜…â˜…â˜…</span></li>
-        <li>Communication <span class="star-group">â˜…â˜…â˜…â˜…â˜…</span></li>
+        <li>Professionalism <span class="star-group">&#9733;&#9733;&#9733;&#9733;&#9733;</span></li>
+        <li>Punctuality <span class="star-group">&#9733;&#9733;&#9733;&#9733;&#9733;</span></li>
+        <li>Quality of Work <span class="star-group">&#9733;&#9733;&#9733;&#9733;&#9733;</span></li>
+        <li>Communication <span class="star-group">&#9733;&#9733;&#9733;&#9733;&#9733;</span></li>
       </ul>
 
       <span class="section-title">About Service</span>
       <ul>
-        <li>Booking Process <span class="star-group">â˜…â˜…â˜…â˜…â˜…</span></li>
-        <li>Value for Money <span class="star-group">â˜…â˜…â˜…â˜…â˜…</span></li>
+        <li>Booking Process <span class="star-group">&#9733;&#9733;&#9733;&#9733;&#9733;</span></li>
+        <li>Value for Money <span class="star-group">&#9733;&#9733;&#9733;&#9733;&#9733;</span></li>
       </ul>
     </div>
 
@@ -103,6 +103,5 @@
   <?php include dirname(__DIR__) . "/client/includes/footer.php"; ?>
 </body>
 </html>
-
 
 

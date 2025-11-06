@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,7 @@
     <title>Outdoor Services - Homi</title>
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/Outdoor-Services.css">
+    <link rel="stylesheet" href="/Outdoor_Services/css/Outdoor-Services.css">
 <link rel="stylesheet" href="/client/css/homepage.css"></head>
 <body>
 <?php include dirname(__DIR__) . "/client/includes/header.php"; ?>

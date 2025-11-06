@@ -5,6 +5,8 @@ use App\Models\Booking;
 use App\Models\ServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
@@ -69,6 +71,25 @@ class BookingController extends Controller
         ]);
 
         $booking->load(['provider', 'user']);
+        try {
+            $socketBase = env('SOCKET_URL', 'http://localhost:3000');
+            $providerUserId = optional($booking->provider)->user_id;
+            Http::post(rtrim($socketBase, '/').'/notify', [
+                'type' => 'booking.created',
+                'title' => 'New Booking',
+                'body' => 'You have a new booking request',
+                'booking_id' => $booking->id,
+                'to_user_id' => $providerUserId,
+                'to_role' => 'provider',
+                'data' => [
+                    'booking_id' => $booking->id,
+                    'service_name' => $booking->service_name,
+                    'client_name' => optional($booking->user)->name,
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Notify booking.created failed: '.$e->getMessage());
+        }
         return response()->json(['success' => true, 'data' => $booking], 201);
     }
 
@@ -122,6 +143,31 @@ class BookingController extends Controller
         $booking->save();
 
         $booking->refresh();
+        try {
+            $socketBase = env('SOCKET_URL', 'http://localhost:3000');
+            $payload = [
+                'booking_id' => $booking->id,
+                'to_user_id' => $booking->user_id,
+                'to_role' => 'client',
+                'data' => [ 'booking_id' => $booking->id, 'status' => $newStatus ],
+            ];
+            if ($newStatus === Booking::STATUS_ONGOING) {
+                $payload['type'] = 'booking.ongoing';
+                $payload['title'] = 'Booking Accepted';
+                $payload['body'] = 'Your booking is now ongoing.';
+            } elseif ($newStatus === Booking::STATUS_COMPLETED) {
+                $payload['type'] = 'booking.completed';
+                $payload['title'] = 'Booking Completed';
+                $payload['body'] = 'Your booking has been marked completed.';
+            } else {
+                $payload['type'] = 'booking.updated';
+                $payload['title'] = 'Booking Updated';
+                $payload['body'] = 'Your booking status changed.';
+            }
+            Http::post(rtrim($socketBase, '/').'/notify', $payload);
+        } catch (\Throwable $e) {
+            Log::warning('Notify booking.updateStatus failed: '.$e->getMessage());
+        }
         return response()->json(['success' => true, 'data' => $booking]);
     }
 
@@ -141,7 +187,22 @@ class BookingController extends Controller
         $booking->status = Booking::STATUS_CANCELLED;
         $booking->cancelled_at = now();
         $booking->save();
-
+        try {
+            $socketBase = env('SOCKET_URL', 'http://localhost:3000');
+            $provider = ServiceProvider::find($booking->provider_id);
+            $providerUserId = optional($provider)->user_id;
+            Http::post(rtrim($socketBase, '/').'/notify', [
+                'type' => 'booking.cancelled',
+                'title' => 'Booking Cancelled',
+                'body' => 'A client cancelled their booking.',
+                'booking_id' => $booking->id,
+                'to_user_id' => $providerUserId,
+                'to_role' => 'provider',
+                'data' => [ 'booking_id' => $booking->id ],
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Notify booking.cancel failed: '.$e->getMessage());
+        }
         return response()->json(['success' => true, 'data' => $booking]);
     }
 

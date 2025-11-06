@@ -5,30 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | Manage Applicants</title>
   <link rel="stylesheet" href="css/manage_applicant.css" />
+<script src="js/lazy-images.js" defer></script>
+<script src="js/app.js" defer></script>
 </head>
 <body>
   <div class="dashboard-container">
     <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="logo">
-        <img src="/admin_haustap/admin_haustap/images/logo.png" alt="logo" />
-        <span>Admin Dashboard</span>
-      </div>
-      <nav>
-        <ul>
-          <li>Dashboard Overview</li>
-          <li class="active">Manage Applicants</li>
-          <li>Manage Clients</li>
-          <li>Manage Providers</li>
-          <li>Manage Bookings</li>
-          <li>Job Status Monitor</li>
-          <li>Analytics & Report</li>
-          <li>Subscription Management</li>
-          <li>Feedback & Reviews</li>
-          <li>System Settings</li>
-        </ul>
-      </nav>
-    </aside>
+    <?php $active = 'applicants'; include 'includes/sidebar.php'; ?>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -65,7 +48,7 @@
       <!-- Table Section -->
       <div class="table-container">
         <div class="table-header">
-          <input type="text" placeholder="Search Applicant" class="search-bar" />
+          <input id="searchInput" type="text" placeholder="Search Applicant" class="search-bar" />
           <span class="filter-icon">⚙️ Filter</span>
         </div>
 
@@ -79,43 +62,16 @@
               <th></th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>Juan Ewan Dela Cruz</td>
-              <td>January 7, 2025</td>
-              <td><span class="status hired">Hired</span></td>
-              <td class="arrow">›</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Ramon Ang</td>
-              <td>January 24, 2025</td>
-              <td><span class="status pending">Pending Review</span></td>
-              <td class="arrow">›</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>Juan Ewan Dela Cruz</td>
-              <td>January 7, 2025</td>
-              <td><span class="status scheduled">Scheduled</span></td>
-              <td class="arrow">›</td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>Ramon Ang</td>
-              <td>January 7, 2025</td>
-              <td><span class="status rejected">Rejected</span></td>
-              <td class="arrow">›</td>
-            </tr>
+          <tbody id="applicantTableBody">
+            <!-- Rows injected by JS -->
           </tbody>
         </table>
 
         <!-- Pagination -->
         <div class="pagination">
-          <span>◀ Prev</span>
-          <span>Showing 4–10 of 120</span>
-          <span>Next ▶</span>
+          <span id="prevPage" style="cursor:pointer">◀ Prev</span>
+          <span id="paginationInfo">&nbsp;</span>
+          <span id="nextPage" style="cursor:pointer">Next ▶</span>
         </div>
       </div>
     </main>
@@ -135,7 +91,7 @@
       if (!dropdown.contains(e.target)) dropdown.classList.remove("show");
     });
 
-    // Tabs
+    // Tabs (highlight only; data loading handled in app.js)
     const tabs = document.querySelectorAll(".tab");
     tabs.forEach(tab => {
       tab.addEventListener("click", () => {
@@ -146,4 +102,5 @@
   </script>
 </body>
 </html>
+
 

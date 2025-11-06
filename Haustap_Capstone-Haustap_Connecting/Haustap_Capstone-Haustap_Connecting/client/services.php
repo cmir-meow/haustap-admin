@@ -36,45 +36,45 @@
                 </div>
             </a>
 
-            <div class="service-card">
+            <a href="/services/outdoor" class="service-card" style="text-decoration:none;color:inherit">
                 <img src="images/outdoor.png" alt="Outdoor Services" class="service-image">
                 <div class="service-content">
                     <h2 class="service-title">Outdoor Services</h2>
                     <p class="service-description">Expert gardening and outdoor care services to make your outdoor space beautiful and well-maintained.</p>
                 </div>
-            </div>
+            </a>
 
-            <div class="service-card">
+            <a href="/services/repairs" class="service-card" style="text-decoration:none;color:inherit">
                 <img src="images/repair.png" alt="Home Repairs" class="service-image">
                 <div class="service-content">
                     <h2 class="service-title">Home Repairs</h2>
                     <p class="service-description">Quick and reliable repairs for plumbing, electrical, and other home maintenance needs.</p>
                 </div>
-            </div>
+            </a>
 
-            <div class="service-card">
+            <a href="/services/beauty" class="service-card" style="text-decoration:none;color:inherit">
                 <img src="images/beauty service.png" alt="Beauty Services" class="service-image">
                 <div class="service-content">
                     <h2 class="service-title">Beauty Services</h2>
                     <p class="service-description">Pamper yourself at home with salon-quality beauty services from certified professionals.</p>
                 </div>
-            </div>
+            </a>
 
-            <div class="service-card">
+            <a href="/services/wellness" class="service-card" style="text-decoration:none;color:inherit">
                 <img src="images/wellness.png" alt="Wellness Services" class="service-image">
                 <div class="service-content">
                     <h2 class="service-title">Wellness Services</h2>
                     <p class="service-description">Enjoy relaxing wellness and self-care services in the comfort of your home.</p>
                 </div>
-            </div>
+            </a>
 
-            <div class="service-card">
+            <a href="/services/tech" class="service-card" style="text-decoration:none;color:inherit">
                 <img src="images/tech.png" alt="Tech & Gadget Services" class="service-image">
                 <div class="service-content">
                     <h2 class="service-title">Tech & Gadget Services</h2>
                     <p class="service-description">Get expert help with device setup, repairs, and smart home installations.</p>
                 </div>
-            </div>
+            </a>
         </div>
     </main>
 

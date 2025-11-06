@@ -11,7 +11,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use Throwable;
+// Note: Global interface Throwable does not require import; avoid noisy warning
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -25,7 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Render all exceptions as consistent JSON for API-style requests
-        $exceptions->render(function (Throwable $e, Request $request) {
+        $exceptions->render(function (\Throwable $e, Request $request) {
             // Only intercept for JSON requests
             if (!($request->expectsJson() || str_contains($request->header('Accept', ''), 'application/json'))) {
                 return null; // use default HTML error rendering

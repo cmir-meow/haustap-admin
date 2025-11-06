@@ -24,16 +24,17 @@
       <h1 id="confirm-title">Processing your booking…</h1>
       <p id="confirm-status" style="margin-top:8px;color:#555"></p>
       <button class="home-btn">Back To Home</button>
+      <a class="bookings-btn" href="/bookings/booking.php" style="display:none;margin-left:8px">View My Bookings</a>
     </div>
   </main>
-  <?php include dirname(__DIR__) . "/client/includes/footer.php"; ?>
   <script>
     (function(){
       var titleEl = document.getElementById('confirm-title');
       var statusEl = document.getElementById('confirm-status');
       var homeBtn = document.querySelector('.home-btn');
+      var bookingsBtn = document.querySelector('.bookings-btn');
       if (homeBtn) {
-        homeBtn.addEventListener('click', function(){ window.location.href = '/'; });
+        homeBtn.addEventListener('click', function(){ window.location.href = '/client/homepage.php'; });
       }
 
       function show(msg){ if (statusEl) statusEl.textContent = msg || ''; }
@@ -90,8 +91,16 @@
         service_name: serviceName,
         scheduled_date: scheduledDate,
         scheduled_time: scheduledTime,
-        address: address,
-        price: 0,
+        address: (function(){
+          var lat = localStorage.getItem('booking_lat');
+          var lng = localStorage.getItem('booking_lng');
+          if (address && address.trim()) return address;
+          if (lat && lng) return (Number(lat).toFixed(5) + ', ' + Number(lng).toFixed(5));
+          return '';
+        })(),
+        lat: (function(){ var v = localStorage.getItem('booking_lat'); return v ? Number(v) : null; })(),
+        lng: (function(){ var v = localStorage.getItem('booking_lng'); return v ? Number(v) : null; })(),
+        price: (function(){ try { var v = localStorage.getItem('selected_service_price'); return v ? Number(v) : 0; } catch(e){ return 0; } })(),
         notes: providerName ? ('Booked with ' + providerName) : 'Created via web booking flow',
       };
 
@@ -101,6 +110,8 @@
       if (typeof HausTapBookingAPI === 'undefined') {
         titleEl && (titleEl.textContent = 'Thank You For Booking!');
         show('Preview mode: API helper not loaded.');
+        // Allow user to navigate to Bookings page even in preview mode
+        if (bookingsBtn) { bookingsBtn.style.display = 'inline-block'; }
         return;
       }
 
@@ -114,13 +125,27 @@
             localStorage.removeItem('selected_time');
             localStorage.removeItem('selected_provider_id');
             localStorage.removeItem('selected_provider_name');
+            if (bookingId) {
+              localStorage.setItem('last_booking_id', String(bookingId));
+            }
           } catch {}
+
+          // Reveal Bookings CTA and deep-link to the new booking
+          if (bookingsBtn) {
+            if (bookingId) {
+              bookingsBtn.setAttribute('href', '/bookings/booking.php?focus=' + encodeURIComponent(bookingId));
+            }
+            bookingsBtn.style.display = 'inline-block';
+          }
         })
         .catch(function(err){
           var msg = (err && err.message) || 'Failed to create booking';
           titleEl && (titleEl.textContent = 'Could not complete booking');
           show(msg + '. Please try again later.');
+          // Still allow user to check Bookings page
+          if (bookingsBtn) { bookingsBtn.style.display = 'inline-block'; }
         });
     })();
   </script>
  </body>
+

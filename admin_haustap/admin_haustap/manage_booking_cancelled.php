@@ -7,30 +7,12 @@
   <link rel="stylesheet" href="css/manage_booking_cancelled.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="js/lazy-images.js" defer></script>
 </head>
 <body>
   <div class="dashboard-container">
     <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="logo">
-        <img src="/admin_haustap/admin_haustap/images/logo.png" alt="logo" />
-        <span>Admin Dashboard</span>
-      </div>
-      <nav>
-        <ul>
-          <li>Dashboard Overview</li>
-          <li>Manage Applicants</li>
-          <li>Manage Clients</li>
-          <li>Manage Providers</li>
-          <li class="active">Manage Bookings</li>
-          <li>Job Status Monitor</li>
-          <li>Analytics & Report</li>
-          <li>Subscription Management</li>
-          <li>Feedback & Reviews</li>
-          <li>System Settings</li>
-        </ul>
-      </nav>
-    </aside>
+    <?php $active = 'bookings'; include 'includes/sidebar.php'; ?>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -154,8 +136,8 @@
       e.stopPropagation();
       dropdownContent.classList.toggle('show');
       filterBtn.innerHTML = dropdownContent.classList.contains('show')
-: '<i class="fa-solid fa-sliders"></i> Filter ▲'
-: '<i class="fa-solid fa-sliders"></i> Filter ▼';
+        ? '<i class="fa-solid fa-sliders"></i> Filter ▲'
+        : '<i class="fa-solid fa-sliders"></i> Filter ▼';
     });
 
     window.addEventListener('click', () => {
@@ -165,4 +147,6 @@ filterBtn.innerHTML = '<i class="fa-solid fa-sliders"></i> Filter ▼';
   </script>
 </body>
 </html>
+
+
 

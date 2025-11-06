@@ -144,6 +144,11 @@
       function normalizeLabel(txt){
         return String(txt||'').replace(/\s+/g,' ').trim();
       }
+      function parsePriceText(txt){
+        var cleaned = String(txt||'').replace(/,/g,'');
+        var m = cleaned.match(/(\d+(?:\.\d+)?)/);
+        return m ? Number(m[1]) : null;
+      }
 
       radios.forEach(function(r){
         r.addEventListener('change', function(){
@@ -152,8 +157,19 @@
           var subcat = activeTab ? normalizeLabel(activeTab.textContent) : 'Plumbing';
           var serviceTitle = titleEl ? normalizeLabel(titleEl.textContent) : '';
           var label = subcat + ' - ' + serviceTitle;
-          try { localStorage.setItem('selected_service_name', label); } catch(e){}
-          window.location.href = '/booking_process/booking_location.php?service=' + encodeURIComponent(label);
+          try {
+            localStorage.setItem('selected_service_name', label);
+            var pEl = card ? card.querySelector('.service-price') : null;
+            var price = pEl ? parsePriceText(pEl.textContent) : null;
+            if (price != null && !isNaN(price)) {
+              localStorage.setItem('selected_service_price', String(price));
+            }
+          } catch(e){}
+          var url = '/booking_process/booking_location.php?service=' + encodeURIComponent(label);
+          var pEl2 = card ? card.querySelector('.service-price') : null;
+          var price2 = pEl2 ? parsePriceText(pEl2.textContent) : null;
+          if (price2 != null && !isNaN(price2)) { url += '&price=' + encodeURIComponent(String(price2)); }
+          window.location.href = url;
         });
       });
     });
