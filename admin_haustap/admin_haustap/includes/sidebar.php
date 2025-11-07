@@ -39,12 +39,10 @@ $active = isset($active) ? $active : '';
   window.SOCKET_URL = window.SOCKET_URL || 'http://localhost:3000';
 </script>
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-<!-- Real-time notifications wiring (shared client modules) -->
-<script src="/client/js/notify.js" defer></script>
-<script src="/client/js/toast.js" defer></script>
+<!-- Removed cross-root client script references to avoid 404s on admin dev server -->
 <!-- Admin-specific UI injection to add dropdown markup and count bubble -->
 <script src="js/notify-admin.js" defer></script>
 <!-- UI binding that renders dropdown and handles unread count -->
-<script src="/client/js/notify-ui.js" defer></script>
+<!-- If shared client UI binding is needed later, serve it under admin/js to keep paths consistent -->
 <!-- Make the topbar Log out link functional -->
 <script src="js/logout-admin.js" defer></script>

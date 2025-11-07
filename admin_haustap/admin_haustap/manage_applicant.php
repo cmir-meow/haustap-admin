@@ -49,7 +49,15 @@
       <div class="table-container">
         <div class="table-header">
           <input id="searchInput" type="text" placeholder="Search Applicant" class="search-bar" />
-          <span class="filter-icon">⚙️ Filter</span>
+          <div class="filter-control">
+            <button id="statusFilterBtn" class="filter-btn" type="button" aria-haspopup="true" aria-expanded="false">⚙️ Filter</button>
+            <div id="statusFilterMenu" class="filter-dropdown" role="menu" aria-hidden="true">
+              <button type="button" data-status="hired">Hired</button>
+              <button type="button" data-status="pending_review">Pending Review</button>
+              <button type="button" data-status="scheduled">Scheduled</button>
+              <button type="button" data-status="rejected">Rejected</button>
+            </div>
+          </div>
         </div>
 
         <table>
