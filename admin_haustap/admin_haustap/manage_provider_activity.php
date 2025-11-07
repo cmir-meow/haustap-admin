@@ -11,7 +11,7 @@
 <body>
   <div class="dashboard-container">
     <!-- Sidebar -->
-    <?php $active = 'providers'; include 'includes/sidebar.php'; ?>
+    <?php $active = 'providers_activity'; ?>include 'includes/sidebar.php'; ?>
 
     <!-- Main Content -->
     <main class="main-content">

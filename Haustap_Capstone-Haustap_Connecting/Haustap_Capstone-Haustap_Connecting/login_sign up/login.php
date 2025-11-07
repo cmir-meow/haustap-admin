@@ -20,7 +20,7 @@
       <input type="email" id="email" name="email" required>
       <label for="password">Password</label>
       <input type="password" id="password" name="password" required>
-      <a href="#" class="forgot">Forgot Password?</a>
+  <a href="/reset-password" class="forgot">Forgot Password?</a>
       <button type="submit">Log In</button>
       <div class="signup-link">
         New to HausTap? <a href="/signup">Sign Up</a>

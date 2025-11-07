@@ -21,7 +21,14 @@
     div.className = 'message ' + side;
     var bubble = document.createElement('div');
     bubble.className = 'bubble';
-    bubble.textContent = m.text + ' \u00A0 ' + fmtTime(m.ts);
+    // message text
+    var p = document.createElement('div'); p.className = 'msg-text';
+    p.textContent = m.text || '';
+    // timestamp
+    var t = document.createElement('div'); t.className = 'msg-time';
+    t.textContent = fmtTime(m.ts) || '';
+    bubble.appendChild(p); bubble.appendChild(t);
+
     if (side === 'left') {
       var iconL = document.createElement('i'); iconL.className = 'fa-solid fa-user';
       div.appendChild(iconL); div.appendChild(bubble);

@@ -16,7 +16,7 @@
   <!-- Reset Password Box -->
   <main>
     <div class="reset-box">
-      <div class="back-arrow">â†</div>
+      <div class="back-arrow"></div>
       <h4>Reset Password</h4>
       <form id="resetForm">
         <input type="email" id="email" placeholder="Email" required>

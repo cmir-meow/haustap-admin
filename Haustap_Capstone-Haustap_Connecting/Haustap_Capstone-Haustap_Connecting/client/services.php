@@ -28,7 +28,7 @@
         </div>
 
         <div class="services-grid">
-            <a href="/services/cleaning" class="service-card" style="text-decoration:none;color:inherit">
+            <a href="/services/cleaning" class="service-card" data-category="cleaning" style="text-decoration:none;color:inherit">
                 <img src="images/cleaning.png" alt="Cleaning Services" class="service-image">
                 <div class="service-content">
                     <h2 class="service-title">Cleaning Services</h2>
@@ -36,7 +36,7 @@
                 </div>
             </a>
 
-            <a href="/services/outdoor" class="service-card" style="text-decoration:none;color:inherit">
+            <a href="/services/outdoor" class="service-card" data-category="outdoor" style="text-decoration:none;color:inherit">
                 <img src="images/outdoor.png" alt="Outdoor Services" class="service-image">
                 <div class="service-content">
                     <h2 class="service-title">Outdoor Services</h2>
@@ -44,7 +44,7 @@
                 </div>
             </a>
 
-            <a href="/services/repairs" class="service-card" style="text-decoration:none;color:inherit">
+            <a href="/services/repairs" class="service-card" data-category="repairs" style="text-decoration:none;color:inherit">
                 <img src="images/repair.png" alt="Home Repairs" class="service-image">
                 <div class="service-content">
                     <h2 class="service-title">Home Repairs</h2>
@@ -52,7 +52,7 @@
                 </div>
             </a>
 
-            <a href="/services/beauty" class="service-card" style="text-decoration:none;color:inherit">
+            <a href="/services/beauty" class="service-card" data-category="beauty" style="text-decoration:none;color:inherit">
                 <img src="images/beauty service.png" alt="Beauty Services" class="service-image">
                 <div class="service-content">
                     <h2 class="service-title">Beauty Services</h2>
@@ -60,7 +60,7 @@
                 </div>
             </a>
 
-            <a href="/services/wellness" class="service-card" style="text-decoration:none;color:inherit">
+            <a href="/services/wellness" class="service-card" data-category="wellness" style="text-decoration:none;color:inherit">
                 <img src="images/wellness.png" alt="Wellness Services" class="service-image">
                 <div class="service-content">
                     <h2 class="service-title">Wellness Services</h2>
@@ -68,16 +68,17 @@
                 </div>
             </a>
 
-            <a href="/services/tech" class="service-card" style="text-decoration:none;color:inherit">
+            <a href="/services/tech" class="service-card" data-category="tech" style="text-decoration:none;color:inherit">
                 <img src="images/tech.png" alt="Tech & Gadget Services" class="service-image">
                 <div class="service-content">
                     <h2 class="service-title">Tech & Gadget Services</h2>
                     <p class="service-description">Get expert help with device setup, repairs, and smart home installations.</p>
                 </div>
             </a>
-        </div>
-    </main>
+            </div>
+            </main>
 
-  <?php include __DIR__ . '/includes/footer.php'; ?>
+            <script src="/client/js/filter-services.js" defer></script>
+        <?php include __DIR__ . '/includes/footer.php'; ?>
 </body>
 </html>

@@ -49,7 +49,7 @@
             <li><a href="/account/voucher" class="account-link"><i class="fa-solid fa-ticket"></i> My Vouchers</a></li>
     <li><a href="/account/connect" class="account-link"><i class="fa-solid fa-link"></i> Connect Haustap</a></li>
     <li><a href="/account/terms" class="account-link"><i class="fa-solid fa-file-contract"></i> Terms and Conditions</a></li>
-    <li><a href="/client/homepage.php#testimonials" class="account-link"><i class="fa-solid fa-star"></i> Rate HOMI</a></li>
+    <li><a href="/client/homepage.php#testimonials" class="account-link"><i class="fa-solid fa-star"></i> Rate HausTap</a></li>
     <li><a href="/about" class="account-link"><i class="fa-solid fa-circle-info"></i> About us</a></li>
   </ul>
 
@@ -99,9 +99,10 @@
           </div>
 
           <div class="profile-image">
-            <i class="fa-solid fa-user fa-4x"></i>
-            <button class="select-image">Select Image</button>
-            <p class="file-note">File size: maximum 1MB<br>File extension: JPEG, PNG</p>
+            <div id="profileImageWrap"><i class="fa-solid fa-user fa-4x"></i></div>
+            <input type="file" id="profileFileInput" accept="image/png,image/jpeg" style="display:none" />
+            <button class="select-image" id="selectImageBtn">Select Image</button>
+            <p class="file-note">File size: maximum 3MB<br>File extension: JPEG, PNG</p>
           </div>
         </div>
       </div>
@@ -112,6 +113,7 @@
    <!-- FOOTER -->
 <?php include dirname(__DIR__) . "/client/includes/footer.php"; ?>
   <script src="/client/js/toast.js"></script>
+  <script src="/my_account/js/profile-image.js" defer></script>
   <script>
     (function() {
       const API_BASE = (function() {

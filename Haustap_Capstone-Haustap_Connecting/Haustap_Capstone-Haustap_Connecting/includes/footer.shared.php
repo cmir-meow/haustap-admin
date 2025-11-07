@@ -5,6 +5,7 @@
 $context = isset($context) ? $context : 'guest';
 $logoSrc = $context === 'client' ? '/client/images/logo.png' : '/guest/images/logo.png';
 ?>
+<link rel="stylesheet" href="/css/footer.css">
 <!-- FOOTER -->
 <footer>
   <div class="footer-content">
@@ -31,8 +32,8 @@ $logoSrc = $context === 'client' ? '/client/images/logo.png' : '/guest/images/lo
     <div class="footer-right">
       <h4>FOLLOW US</h4> <br>
       <ul>
-        <li><i class="fab fa-facebook-f"></i> Facebook</li>
-        <li><i class="fab fa-instagram"></i> Instagram</li>
+        <li><a href="https://www.facebook.com/profile.php?id=61583010005975" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a></li>
+        <li><a href="https://www.instagram.com/haustap.ph/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a></li>
       </ul>
       <div class="contact-info">
         <p>
@@ -67,6 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <!-- Logout handler shared across guest/client pages -->
 <script src="/client/js/logout.js" defer></script>
+<script src="/client/js/search-categories.js" defer></script>
 <script>
 // Client-side repair for common mojibake sequences caused by prior mis-encoding
 document.addEventListener('DOMContentLoaded', function () {

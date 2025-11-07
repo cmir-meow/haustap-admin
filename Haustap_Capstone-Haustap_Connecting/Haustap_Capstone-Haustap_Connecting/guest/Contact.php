@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contact - HausTap</title>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="/css/global.css" />
   <link rel="stylesheet" href="css/homepage.css" />
   <link rel="stylesheet" href="css/contact.css" />
@@ -29,12 +30,16 @@
       <div class="tab-content connect-tab">
         <div class="social-icons">
           <div class="social-card">
-            <img src="images/facebook.png" alt="Facebook">
-            <a href="#">Facebook page</a>
+            <a href="https://www.facebook.com/profile.php?id=61583010005975" target="_blank" rel="noopener noreferrer">
+              <img src="images/facebook.png" alt="Facebook">
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61583010005975" target="_blank" rel="noopener noreferrer">Facebook page</a>
           </div>
           <div class="social-card">
-            <img src="images/instagram.png" alt="Instagram">
-            <a href="#">Instagram page</a>
+            <a href="https://www.instagram.com/haustap.ph/" target="_blank" rel="noopener noreferrer">
+              <img src="images/instagram.png" alt="Instagram">
+            </a>
+            <a href="https://www.instagram.com/haustap.ph/" target="_blank" rel="noopener noreferrer">Instagram page</a>
           </div>
           <div class="social-card">
             <img src="images/twitter.png" alt="X">

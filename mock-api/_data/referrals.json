@@ -19,5 +19,19 @@
         "referred_by": null,
         "referrals": [],
         "created_at": 1762448264568
+    },
+    {
+        "email": "admin@haustap.local",
+        "code": "ZHSKQQ",
+        "referred_by": null,
+        "referrals": [],
+        "created_at": 1762528366200
+    },
+    {
+        "email": "casdjawd@taraerneajr.dfseifes",
+        "code": "LEBNUQ",
+        "referred_by": null,
+        "referrals": [],
+        "created_at": 1762529423025
     }
 ]

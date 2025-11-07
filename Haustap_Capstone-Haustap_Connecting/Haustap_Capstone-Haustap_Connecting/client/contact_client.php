@@ -123,6 +123,8 @@
     })();
   </script>
   <script src="/client/js/socket-chat.js"></script>
+  <!-- Local fallback: ensure send button appends messages even without socket/backend -->
+  <script src="/client/js/chat-local-fallback.js"></script>
 </body>
 </html>
 

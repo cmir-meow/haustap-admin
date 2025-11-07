@@ -4,6 +4,9 @@
 
 $context = isset($context) ? $context : 'guest';
 $current = $_SERVER['REQUEST_URI'] ?? '';
+?>
+<link rel="stylesheet" href="/client/css/search.css">
+<?php
 $isActive = function(array $patterns) use ($current) {
   foreach ($patterns as $p) {
     if (stripos($current, $p) === 0) { return ' class="active"'; }

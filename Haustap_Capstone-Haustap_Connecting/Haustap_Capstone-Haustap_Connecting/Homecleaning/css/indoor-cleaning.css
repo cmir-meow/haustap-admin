@@ -222,16 +222,12 @@ footer {
   background: #e6e6e6;
   padding: 50px 70px 25px;
   color: #000;
-  min-height: 200px;
-  position: relative;
 }
 
 .footer-content {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  min-height: 150px;
-  position: relative;
 }
 
 .footer-left,
@@ -242,141 +238,31 @@ footer {
 }
 
 /* LEFT SECTION */
+.footer-left {
+  padding-left: 0;
+}
+
 .footer-left h4 {
   font-weight: 700;
   margin-bottom: 10px;
+  margin-left: 0;
 }
 
 .footer-left ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .footer-left li {
   margin-bottom: 5px;
+  margin-left: 0;
 }
 
 .footer-left a {
   text-decoration: none;
   color: #000;
-}
-/* ===== HOUSE TYPES (Cleaning Services landing) ===== */
-/* Page section wrapper */
-.centered-section {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
-
-/* Subcategory button at top */
-.subcategory-btn {
-  display: block;
-  margin: 16px auto 12px auto;
-  padding: 6px 28px;
-  font-size: 1rem;
-  font-weight: 500;
-  border: 1px solid #222;
-  border-radius: 22px;
-  background: #fff;
-  cursor: pointer;
-}
-
-/* Breadcrumbs */
-.breadcrumbs {
-  display: inline-flex;
-  gap: 10px;
-  align-items: center;
-  color: #666;
-  font-size: 1.2rem; /* match desired sizing */
-  margin: 8px 0 18px 0;
-}
-.breadcrumbs a {
-  color: #000; /* default black */
-  text-decoration: none;
-  font-weight: 500;
-}
-.breadcrumbs a:hover {
-  color: #009999; /* teal on hover */
-  text-decoration: underline;
-}
-/* Persist highlight for the current page in breadcrumbs */
-.breadcrumbs a[aria-current="page"] {
-  color: #009999; /* teal when active/current */
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 6px;
-}
-
-/* Section title */
-.section-title {
-  text-align: center;
-  font-weight: 600;
-  font-size: 1.2rem;
-  color: #009999;
-  margin: 8px 0 18px 0;
-}
-
-/* Groups of house cards */
-.house-group h2 {
-  font-size: 1.15rem;
-  margin: 18px 0 10px 0;
-  color: #222;
-}
-.house-cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  justify-content: center;
-  margin-bottom: 14px;
-}
-
-/* Individual house card */
-.house-card {
-  background: #e2e3e2;
-  box-shadow: 2px 4px 8px rgba(0,0,0,0.08);
-  border-radius: 10px;
-  padding: 16px 20px 16px 20px;
-  width: 340px;
-  box-sizing: border-box;
-  position: relative;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  min-height: 150px;
-}
-
-/* Radio control on each card */
-.house-radio {
-  position: absolute;
-  top: 14px;
-  right: 18px;
-  accent-color: #009999;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-}
-
-/* Reuse invisible label to make whole area clickable when needed */
-.radio-label {
-  position: absolute;
-  top: 14px;
-  right: 18px;
-  width: 22px;
-  height: 22px;
-  cursor: pointer;
-  opacity: 0;
-}
-
-.house-title {
-  font-size: 1.05rem;
-  font-weight: 600;
-  margin-bottom: 6px;
-  padding-right: 28px;
-}
-
-.house-desc {
-  font-size: 0.95rem;
-  color: #333;
+  padding-left: 0;
 }
 
 .footer-left a:hover {
@@ -386,72 +272,78 @@ footer {
 /* CENTER SECTION */
 .footer-center {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .footer-center img {
   width: 100px;
+  display: block;
+  margin: 0 auto 15px;
 }
 
 .footer-center p {
   font-size: 13px;
+  margin: 0;
+  width: 100%;
+  text-align: center;
 }
 
 /* RIGHT SECTION */
 .footer-right {
   text-align: right;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  padding-right: 0;
 }
 
 .footer-right h4 {
   font-weight: 700;
   margin-bottom: 10px;
+  margin-right: 0;
 }
 
 .footer-right ul {
   list-style: none;
   padding: 0;
   margin: 0;
-  position: absolute;
-  top: 50px;
-  right: 0;
 }
 
 .footer-right li {
   margin-bottom: 6px;
+  margin-right: 0;
+  color: #000;
 }
 
-.footer-right .contact-info {
-  position: absolute;
-  bottom: -40px;
-  right: 0;
-  margin: 0;
+.footer-right li a {
+  color: #000 !important;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-right li a i {
+  color: #000 !important;
+}
+
+.footer-right li a:hover,
+.footer-right li a:hover i {
+  color: #10bfc9 !important;
 }
 
 .footer-right .contact-info p {
   font-size: 13px;
   margin-top: 10px;
   line-height: 1.5;
+  margin-right: 0;
+  text-align: right;
 }
 
 /* FOOTER BOTTOM */
 .footer-bottom {
   text-align: center;
   font-weight: 600;
-  margin-top: 25px;
+  margin-top: -15px;
   border-top: 1px solid #d1d1d1;
   padding-top: 10px;
   font-size: 14px;
-}
-
-/* RESPONSIVE */
-@media (max-width: 900px) {
-  .booking-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .map-container {
-    height: 200px;
-  }
 }

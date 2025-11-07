@@ -22,8 +22,8 @@
         We’re always happy to assist and make your HausTap experience smoother.
       </p>
       <div class="social-icons">
-        <i class="fab fa-facebook-f"></i>
-        <i class="fab fa-instagram"></i>
+        <a href="https://www.facebook.com/profile.php?id=61583010005975" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com/haustap.ph/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
       </div>
     </div>
 
