@@ -9,10 +9,10 @@
       return;
     }
 
-    // Target can be 'backend' or 'mock' (default: mock)
-    var target = ((window.API_TARGET || '') + '').toLowerCase();
+    // Target can be 'backend' or 'mock' (default: backend)
+    var target = ((window.API_TARGET || 'backend') + '').toLowerCase();
     if (target === 'backend') {
-      var backend = (window.BACKEND_BASE || 'http://127.0.0.1:8001').replace(/\/+$/, '');
+      var backend = (window.BACKEND_BASE || 'http://127.0.0.1:8001/api').replace(/\/+$/, '');
       window.API_BASE = backend;
       return;
     }

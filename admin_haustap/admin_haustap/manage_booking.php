@@ -6,7 +6,9 @@
   <title>Manage Bookings</title>
   <link rel="stylesheet" href="css/manage_booking.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<script src="js/lazy-images.js" defer></script></head>
+<script src="js/lazy-images.js" defer></script>
+<script src="js/app.js" defer></script>
+</head>
 <body>
    <div class="dashboard-container">
     <!-- Sidebar -->
@@ -42,7 +44,7 @@
 
        <!-- Search and Filter -->
 <div class="search-filter">
-  <input type="text" placeholder="Search">
+  <input id="searchInput" type="text" placeholder="Search">
 
   <div class="filter-dropdown">
 <button class="filter-btn"><i class="fa-solid fa-sliders"></i> Filter ▼</button>
@@ -72,31 +74,16 @@
               <th></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="bookingTableBody">
             <tr>
-              <td>1</td>
-              <td>Juan Ewan Dela Cruz</td>
-              <td>Ramon Ang</td>
-              <td>Home Cleaning</td>
-              <td>2025-06-07 14:30</td>
-              <td><span class="status complete">Complete</span></td>
-              <td class="arrow">›</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Ramon Ang</td>
-              <td>Juan Dela Cruz</td>
-              <td>Home Cleaning</td>
-              <td>2025-06-07 14:30</td>
-              <td><span class="status cancelled">Cancelled</span></td>
-              <td class="arrow">›</td>
+              <td colspan="7" style="text-align:center">Loading bookings…</td>
             </tr>
           </tbody>
         </table>
        <div class="pagination">
-          <span>[ ◀ Prev ]</span>
-          <span>Showing 2–10 of 120 Clients</span>
-          <span>[ Next ▶ ]</span>
+          <button id="prevPage">◀ Prev</button>
+          <span id="paginationInfo"></span>
+          <button id="nextPage">Next ▶</button>
         </div>
       </div>
       </div>
@@ -167,6 +154,7 @@
       if (applyBtn) applyBtn.addEventListener('click', (e) => { e.preventDefault(); applyFilter(); });
     })();
   </script>
+  <script src="js/app.js"></script>
 </body>
 </html>
 

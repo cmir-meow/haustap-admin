@@ -41,9 +41,7 @@
 
           <!-- Filter Dropdown -->
           <div class="filter-dropdown">
-            <button class="filter-btn" id="filterBtn">
-<div class="filter-btn"><i class="fa-solid fa-sliders"></i> Filter</div>
-            </button>
+            <button class="filter-btn" id="filterBtn"><i class="fa-solid fa-sliders"></i> Filter</button>
 
             <div class="dropdown-content" id="filterDropdown">
               <div class="filter-section">
