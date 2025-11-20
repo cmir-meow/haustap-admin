@@ -40,7 +40,9 @@
         "lng": 121.04691576053385,
         "price": 3000,
         "notes": "Booked with Ana Santos",
-        "status": "pending",
-        "created_at": 1762527500470
+        "status": "cancelled",
+        "created_at": 1762527500470,
+        "cancellation_reason": "Change of Schedule",
+        "cancelled_at": 1763608578025
     }
 ]

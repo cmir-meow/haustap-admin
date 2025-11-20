@@ -1,3 +1,17 @@
+<?php require_once __DIR__ . '/includes/auth.php'; ?>
+<?php
+  $client = null;
+  $clientId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+  $storePath = realpath(__DIR__ . '/../../storage/data/clients.json');
+  if ($storePath && is_file($storePath)) {
+    $raw = @file_get_contents($storePath);
+    $items = json_decode($raw ?: '[]', true);
+    if (is_array($items)) {
+      foreach ($items as $it) { if (isset($it['id']) && (int)$it['id'] === $clientId) { $client = $it; break; } }
+    }
+  }
+  if (!$client) { $client = ['id' => $clientId ?: 0, 'status' => isset($_GET['status']) ? $_GET['status'] : 'active']; }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +24,7 @@
 <body>
   <div class="dashboard-container">
     <!-- Sidebar -->
-    <?php $active = 'clients_voucher'; ?>include 'includes/sidebar.php'; ?>
+    <?php $active = 'clients'; include 'includes/sidebar.php'; ?>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -24,7 +38,6 @@
             <div class="user-dropdown" id="userDropdown">
               <a href="#">View Profile</a>
               <a href="#">Change Password</a>
-              <a href="#">Activity Logs</a>
               <a href="#" class="logout">Log out</a>
             </div>
           </div>
@@ -32,10 +45,11 @@
       </header>
         <!-- Tabs -->
       <div class="tabs">
-        <button>Profile</button>
-        <button>Bookings</button>
-        <button>Activity</button>
-        <button class="active">Voucher</button>
+        <?php $cid = (int)($client['id'] ?? 0); $cstatus = urlencode($client['status'] ?? ''); ?>
+        <button data-target="manage_client_profile.php?id=<?php echo $cid; ?>&status=<?php echo $cstatus; ?>">Profile</button>
+        <button data-target="manage_client_booking.php?id=<?php echo $cid; ?>&status=<?php echo $cstatus; ?>">Bookings</button>
+        <button data-target="manage_client_activity.php?id=<?php echo $cid; ?>&status=<?php echo $cstatus; ?>">Activity</button>
+        <button class="active" data-target="manage_client_voucher.php?id=<?php echo $cid; ?>&status=<?php echo $cstatus; ?>">Voucher</button>
       </div>
 
       <!-- Search and Filter -->
@@ -134,6 +148,36 @@
       dropdownContent.classList.remove('show');
 filterBtn.innerHTML = '<i class="fa-solid fa-sliders"></i> Filter ▼';
     });
+  </script>
+  <script>
+    (function(){
+      var tabs = document.querySelector('.tabs');
+      if (!tabs) return;
+      tabs.querySelectorAll('button').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var target = btn.getAttribute('data-target');
+          if (target) { try { window.location.href = target; } catch(err) { console.error('Navigation failed', err); } }
+        });
+      });
+    })();
+  </script>
+  <script>
+    (function(){
+      var input = document.querySelector('.search-filter input[type="text"]');
+      var tbody = document.querySelector('.voucher-table tbody');
+      if (!input || !tbody) return;
+      var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+      function norm(s){ return (s||'').toString().replace(/\s+/g,' ').trim().toLowerCase(); }
+      function rowText(row){ return norm(row.textContent); }
+      function apply(q){
+        var t = norm(q);
+        rows.forEach(function(row){
+          var text = rowText(row);
+          row.style.display = (!t || text.indexOf(t) !== -1) ? '' : 'none';
+        });
+      }
+      input.addEventListener('input', function(e){ apply(e.target.value); });
+    })();
   </script>
 </body>
 </html>

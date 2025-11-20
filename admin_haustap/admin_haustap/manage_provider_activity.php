@@ -1,44 +1,54 @@
+<?php require_once __DIR__ . '/includes/auth.php'; ?>
+<?php
+$provider = null;
+$providerId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$storePath = realpath(__DIR__ . '/../../storage/data/providers.json');
+if ($storePath && is_file($storePath)) {
+  $raw = @file_get_contents($storePath);
+  $items = json_decode($raw ?: '[]', true);
+  if (is_array($items)) {
+    foreach ($items as $it) { if ((int)($it['id'] ?? 0) === $providerId) { $provider = $it; break; } }
+  }
+}
+if (!$provider) { $provider = ['id' => $providerId ?: 0, 'status' => isset($_GET['status']) ? $_GET['status'] : 'active']; }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - Activity</title>
+  <title>Manage Providers - Activity</title>
+  <link rel="stylesheet" href="css/manage_client_activity.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="css/manage_provider_activity.css">
-<script src="js/lazy-images.js" defer></script>
+  <script src="js/lazy-images.js" defer></script>
 </head>
 <body>
   <div class="dashboard-container">
-    <!-- Sidebar -->
-    <?php $active = 'providers_activity'; ?>include 'includes/sidebar.php'; ?>
+    <?php $active = 'providers'; include 'includes/sidebar.php'; ?>
 
-    <!-- Main Content -->
     <main class="main-content">
-      <!-- Topbar -->
       <header class="topbar">
-        <h3>Manage of Provider > Name </h3>
+        <h3>Manage Providers </h3>
         <div class="user">
           <button class="notif-btn">🔔</button>
           <div class="user-menu">
             <button id="userDropdownBtn" class="user-dropdown-btn">Mj Punzalan ▼</button>
             <div class="user-dropdown" id="userDropdown">
-              <a href="#">View Profile</a>
-              <a href="#">Change Password</a>
-              <a href="#">Activity Logs</a>
-              <a href="#" class="logout">Log out</a>
+              <a href="admin_profile.php">View Profile</a>
+              <a href="/admin_haustap/admin_haustap/change_password.php">Change Password</a>
+              <a href="logout.php" class="logout">Log out</a>
             </div>
           </div>
         </div>
       </header>
 
-      <!-- Tabs -->
       <div class="tabs">
-        <button>Profile</button>
-        <button>Bookings</button>
-        <button class="active">Activity</button>
-        <button>Voucher</button>
-        <button>Subscription</button>
+        <?php $pid = (int)($provider['id'] ?? 0); $pstatus = urlencode($provider['status'] ?? ''); ?>
+        <button data-target="manage_provider_profile.php?id=<?php echo $pid; ?>&status=<?php echo $pstatus; ?>">Profile</button>
+        <button data-target="manage_provider_jobs.php?id=<?php echo $pid; ?>&status=<?php echo $pstatus; ?>">Jobs</button>
+        <button class="active" data-target="manage_provider_activity.php?id=<?php echo $pid; ?>&status=<?php echo $pstatus; ?>">Activity</button>
+        <button data-target="manage_provider_voucher.php?id=<?php echo $pid; ?>&status=<?php echo $pstatus; ?>">Voucher</button>
+        <button data-target="manage_provider_subscription.php?id=<?php echo $pid; ?>&status=<?php echo $pstatus; ?>">Subscription</button>
       </div>
 
      <!-- Search and Filter -->
@@ -67,8 +77,6 @@
   </div>
 </div>
 
-
-      <!-- Activity Table -->
       <div class="table-container">
         <table>
           <thead>
@@ -136,6 +144,60 @@
       dropdownContent.classList.remove('show');
 filterBtn.innerHTML = '<i class="fa-solid fa-sliders"></i> Filter ▼';
     });
+  </script>
+  <script>
+    (function(){
+      var dropdownContent = document.querySelector('.dropdown-content');
+      if (!dropdownContent) return;
+      var applyBtn = dropdownContent.querySelector('.apply-btn');
+      var fromDate = document.getElementById('from-date');
+      var toDate = document.getElementById('to-date');
+      var searchInput = document.querySelector('.search-filter input[type="text"]');
+      function norm(s){ return (s||'').toString().replace(/\s+/g,' ').trim().toLowerCase(); }
+      function parseCellDate(txt){
+        var s = (txt||'').trim().replace(/\s*-\s*/g,'-');
+        var parts = s.split(' ');
+        var iso = parts[0] ? parts[0] + (parts[1] ? 'T'+parts[1] : '') : '';
+        var d = iso ? new Date(iso) : null;
+        return d && !isNaN(d.getTime()) ? d : null;
+      }
+      function getFrom(){ return (fromDate && fromDate.value) ? new Date(fromDate.value + 'T00:00:00') : null; }
+      function getTo(){ var v = toDate && toDate.value || ''; return v ? new Date(v + 'T23:59:59') : null; }
+      function apply(){
+        var q = norm(searchInput ? searchInput.value : '');
+        var f = getFrom();
+        var t = getTo();
+        var rows = document.querySelectorAll('.table-container tbody tr');
+        rows.forEach(function(row){
+          var text = norm(row.textContent||'');
+          var cell = row.querySelector('td:nth-child(1)');
+          var d = parseCellDate(cell ? cell.textContent : '');
+          var searchOk = (!q || text.indexOf(q) !== -1);
+          var dateOk = true;
+          if (d) {
+            if (f && d < f) dateOk = false;
+            if (t && d > t) dateOk = false;
+          }
+          row.style.display = (searchOk && dateOk) ? '' : 'none';
+        });
+      }
+      if (applyBtn) applyBtn.addEventListener('click', function(e){ e.preventDefault(); apply(); dropdownContent.classList.remove('show'); var fb=document.querySelector('.filter-btn'); if (fb) fb.innerHTML='<i class="fa-solid fa-sliders"></i> Filter ▼'; });
+      if (fromDate) fromDate.addEventListener('change', apply);
+      if (toDate) toDate.addEventListener('change', apply);
+      if (searchInput) searchInput.addEventListener('input', apply);
+    })();
+  </script>
+  <script>
+    (function(){
+      var tabs = document.querySelector('.tabs');
+      if (!tabs) return;
+      tabs.querySelectorAll('button').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var target = btn.getAttribute('data-target');
+          if (target) { try { window.location.href = target; } catch(err) { console.error('Navigation failed', err); } }
+        });
+      });
+    })();
   </script>
 </body>
 </html>
