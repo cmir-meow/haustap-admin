@@ -17,6 +17,12 @@ final class ApplicantsController {
         return [];
     }
 
+    private function writeStore(array $items): void {
+        $dir = dirname($this->storeFile);
+        if (!is_dir($dir)) { @mkdir($dir, 0777, true); }
+        file_put_contents($this->storeFile, json_encode($items, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+    }
+
     private static function normalizeStatus(?string $s): string {
         $s = strtolower(trim((string)($s ?? '')));
         if ($s === '') { return 'pending_review'; }
@@ -61,6 +67,23 @@ final class ApplicantsController {
             'limit' => $limit,
             'total' => $total,
         ]);
+    }
+
+    // POST /api/admin/applicants/{id}/status
+    public function updateStatus(int $id): void {
+        $items = $this->loadStore();
+        $raw = file_get_contents('php://input');
+        $payload = json_decode($raw ?: '{}', true);
+        $new = self::normalizeStatus($payload['status'] ?? null);
+        if ($new === '') { $new = 'pending_review'; }
+        $found = false;
+        foreach ($items as &$it) {
+            if ((int)($it['id'] ?? 0) === $id) { $it['status'] = $new; $found = true; break; }
+        }
+        unset($it);
+        if (!$found) { $this->json(['success'=>false,'message'=>'Applicant not found'], 404); return; }
+        $this->writeStore($items);
+        $this->json(['success' => true, 'id' => $id, 'status' => $new]);
     }
 }
 

@@ -74,6 +74,21 @@ $router->get('/admin_haustap/admin_haustap/*', function() {
 
 // Admin JSON API routes
 $router->get('/api/admin/applicants', fn() => (new ApplicantsController())->index());
+$router->post('/api/admin/applicants/*', function() {
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $prefix = '/api/admin/applicants/';
+    if (strpos($path, $prefix) !== 0) { http_response_code(404); echo 'Not Found'; return; }
+    $rest = substr($path, strlen($prefix));
+    $rest = trim($rest, '/');
+    $parts = $rest === '' ? [] : explode('/', $rest);
+    // Expect: {id}/status
+    if (count($parts) === 2 && is_numeric($parts[0]) && strtolower($parts[1]) === 'status') {
+        (new ApplicantsController())->updateStatus((int)$parts[0]);
+        return;
+    }
+    http_response_code(404);
+    echo 'Not Found';
+});
 $router->get('/api/admin/analytics/summary', fn() => (new AnalyticsController())->summary());
 // Trailing-slash tolerant route for analytics summary
 $router->get('/api/admin/analytics/summary/', fn() => (new AnalyticsController())->summary());

@@ -118,6 +118,15 @@
             <div class="modal-row"><span class="label">Provider:</span><span class="value" data-field="provider"></span></div>
             <div class="modal-row"><span class="label">Service:</span><span class="value" data-field="service"></span></div>
             <div class="modal-row"><span class="label">Date & Time:</span><span class="value" data-field="datetime"></span></div>
+            <div class="modal-row"><span class="label">Update Status:</span>
+              <select class="status-select" id="modalStatusSelect">
+                <option value="pending">Pending</option>
+                <option value="ongoing">Ongoing</option>
+                <option value="complete">Completed</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="return">Return</option>
+              </select>
+            </div>
             <div class="modal-section" data-section="pending">
               <div class="section-title">Pending</div>
               <p class="section-text">This booking is pending. Actions are limited until confirmation.</p>
@@ -141,6 +150,7 @@
           </div>
           <div class="modal-footer">
             <button class="modal-action" data-action="close">Close</button>
+            <button class="modal-action" data-action="update-status">Update Status</button>
           </div>
         </div>
       </div>
@@ -402,6 +412,9 @@
       if (!overlay || !modal) return;
       const closeBtn = modal.querySelector('.modal-close');
       const footerClose = modal.querySelector('.modal-action[data-action="close"]');
+      const footerUpdate = modal.querySelector('.modal-action[data-action="update-status"]');
+      const statusSelect = modal.querySelector('#modalStatusSelect');
+      let currentRow = null;
       function setField(field, text){
         const el = modal.querySelector('[data-field="'+field+'"]');
         if (el) el.textContent = text || '';
@@ -429,6 +442,23 @@
         if (cls.contains('return')) return 'return';
         return '';
       }
+      function cap(s){ return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+      function getActiveTabStatus(){
+        const active = document.querySelector('.tabs .tab.active');
+        return active ? (active.getAttribute('data-status') || 'all') : 'all';
+      }
+      function applyStatusToRow(row, status){
+        const badge = row.querySelector('.status');
+        if (!badge) return;
+        const classes = ['complete','completed','ongoing','pending','cancelled','return'];
+        classes.forEach(c => badge.classList.remove(c));
+        if (status === 'complete') badge.classList.add('complete');
+        else badge.classList.add(status);
+        badge.textContent = cap(status === 'complete' ? 'completed' : status);
+        const st = getActiveTabStatus();
+        if (typeof showRowsForStatus === 'function') showRowsForStatus(st);
+        if (typeof window.updateBookingRowVisibility === 'function') window.updateBookingRowVisibility(row);
+      }
       function openRowModal(row){
         const id = row.querySelector('td:nth-child(1)')?.textContent.trim() || '';
         const client = row.querySelector('td:nth-child(2)')?.textContent.trim() || '';
@@ -445,6 +475,8 @@
         setField('datetime', datetime);
         setStatusBadge(statusText, statusClass);
         showSection(statusClass || '');
+        if (statusSelect) statusSelect.value = statusClass || 'pending';
+        currentRow = row;
         overlay.setAttribute('aria-hidden','false');
         overlay.classList.add('show');
       }
@@ -460,6 +492,20 @@
       });
       closeBtn && closeBtn.addEventListener('click', closeModal);
       footerClose && footerClose.addEventListener('click', closeModal);
+      footerUpdate && footerUpdate.addEventListener('click', function(){
+        if (!currentRow || !statusSelect) return;
+        const idText = modal.querySelector('[data-field="id"]').textContent.trim();
+        const idNum = parseInt(idText, 10);
+        const newStatus = statusSelect.value || '';
+        applyStatusToRow(currentRow, newStatus);
+        setStatusBadge(cap(newStatus === 'complete' ? 'completed' : newStatus), newStatus);
+        showSection(newStatus);
+        if (!isNaN(idNum) && newStatus) {
+          try {
+            fetch('/mock-api/bookings/'+idNum+'/status', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: newStatus }) });
+          } catch (err) {}
+        }
+      });
       overlay.addEventListener('click', function(e){
         if (e.target === overlay) closeModal();
       });

@@ -403,24 +403,25 @@
       modalClose.addEventListener('click', closeModal);
       modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-      // Update status: update UI cell in the current row. This is client-side only.
-      modalUpdateBtn.addEventListener('click', function(){
+      // Update status: call API, then reload the current tab list to reflect movement
+      modalUpdateBtn.addEventListener('click', async function(){
         if (!currentRow) return;
+        const cols = currentRow.querySelectorAll('td');
+        const idText = cols[0] ? cols[0].textContent.trim() : '';
+        const idNum = parseInt(idText, 10);
         const newStatus = modalStatus.value;
-        const statusCell = currentRow.querySelector('td:nth-child(4) .status');
-        if (statusCell){
-          // Update text and class
-          const label = {
-            pending_review: 'Pending Review',
-            scheduled: 'Scheduled',
-            hired: 'Hired',
-            rejected: 'Rejected'
-          }[newStatus] || newStatus;
-          statusCell.textContent = label;
-          statusCell.className = 'status ' + (newStatus === 'pending_review' ? 'pending' : newStatus);
-        }
-        // Close modal
+        try {
+          if (!isNaN(idNum)) {
+            await fetch('/api/admin/applicants/'+idNum+'/status', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept':'application/json' },
+              body: JSON.stringify({ status: newStatus })
+            });
+          }
+        } catch(err) { /* non-fatal */ }
         closeModal();
+        const activeTab = document.querySelector('.tabs .tab.active');
+        if (activeTab) { activeTab.click(); }
       });
     })();
   </script>
